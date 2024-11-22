@@ -1,0 +1,32 @@
+{% extends 'parent.html' %} {% block title %}
+<title>Products Display</title>
+{% endblock title %} {% block body %}
+
+<div class="container d-flex gap-2">
+  <div class="border border-secondary p-2">
+    <img
+      src="https://cdn.britannica.com/89/170689-131-D20F8F0A/Potatoes.jpg"
+      class="rounded float-start"
+      alt="Potato"
+      height="150"
+    />
+    <p class="px-4">Potato</p>
+    <p class="px-4">Price 70</p>
+    <button class="btn btn-outline-danger mx-4">Order Now</button>
+  </div>
+
+  <div class="border border-secondary p-2">
+    <img
+      src="https://www.feedipedia.org/sites/default/files/images/tomato_fruits.jpg"
+      class="rounded float-start"
+      alt="Tomato"
+      height="150"
+    />
+
+    <p class="px-4">Tomato</p>
+    <p class="px-4">Price 180</p>
+    <button class="btn btn-outline-danger mx-4">Order Now</button>
+  </div>
+</div>
+
+{% endblock body %}

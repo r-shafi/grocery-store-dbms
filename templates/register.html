@@ -1,0 +1,46 @@
+{% extends 'parent.html' %} {% block title %}
+
+<title>Register Page</title>
+
+{% endblock title %} {% block body %}
+
+<div class="container">
+  <h2 class="text-center mb-5">Register</h2>
+
+  <form class="d-grid gap-3 w-50 mx-auto" action="/register" method="post">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Name"
+      name="name"
+      autocomplete="name"
+      required
+    />
+
+    <input
+      type="email"
+      class="form-control"
+      placeholder="Email"
+      name="email"
+      autocomplete="email"
+      required
+    />
+
+    <input
+      type="password"
+      class="form-control"
+      placeholder="Password"
+      name="password"
+      autocomplete="new-password"
+      required
+    />
+
+    <button type="submit" class="btn btn-outline-danger mb-5">Register</button>
+
+    <a class="text-center" href="/login">
+      If already registered then login now!
+    </a>
+  </form>
+</div>
+
+{% endblock body %}
