@@ -1,5 +1,7 @@
 # Grocery Store Application
 
+![](https://static.vecteezy.com/system/resources/previews/002/035/105/non_2x/supermarket-grocery-store-interior-flat-illustration-vector.jpg)
+
 ## Technologies Used
 
 - Python
