@@ -5,19 +5,18 @@
 <div class="container">
   <h2 class="text-center mb-5">Login</h2>
 
-  <form class="d-grid gap-2 w-50 mx-auto" action="/" method="post">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Email"
-      aria-label="Email"
-    />
+  {% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <form class="d-grid gap-2 w-50 mx-auto" action="/login" method="post">
+    <input type="text" class="form-control" placeholder="Email" name="email" />
 
     <input
       type="text"
       class="form-control"
       placeholder="Password"
-      aria-label="password"
+      name="password"
     />
 
     <button type="submit" class="btn btn-outline-danger mb-5">Login</button>
