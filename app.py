@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.exceptions import BadRequest, InternalServerError
 
-db = SQLAlchemy()
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 
 class Users(db.Model):
@@ -10,14 +15,16 @@ class Users(db.Model):
     email = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.String(32), nullable=False)
 
+    def __repr__(self):
+        return f"<User {self.name}>"
+
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
 
 def init_db():
     db.create_all()
 
-
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
-db.init_app(app)
 
 with app.app_context():
     init_db()
@@ -25,12 +32,10 @@ with app.app_context():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
-
-
-@app.route("/main")
-def main():
-    return "This is the main page"
+    try:
+        return render_template("index.html")
+    except Exception as e:
+        return jsonify({'error': str(e)}), InternalServerError.code
 
 
 @app.route("/login")
@@ -41,26 +46,44 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        password = request.form.get('password')
+        try:
+            name = request.form.get('name')
+            if not name:
+                raise BadRequest('Name is required')
+            email = request.form.get('email')
+            if not email:
+                raise BadRequest('Email is required')
+            password = request.form.get('password')
+            if not password:
+                raise BadRequest('Password is required')
 
-        new_user = Users(name=name, email=email, password=password)
+            new_user = Users(name=name, email=email,
+                             password=password)
 
-        db.session.add(new_user)
-        db.session.commit()
+            db.session.add(new_user)
+            db.session.commit()
+
+            return jsonify({'message': 'User registered successfully'}), 201
+
+        except BadRequest as e:
+            return jsonify({'error': str(e)}), 400
+        except Exception as e:
+            return jsonify({'error': 'An unexpected error occurred'}), InternalServerError.code
 
     return render_template("register.html")
 
 
 @app.route("/test")
 def test():
-    users = db.session.execute(db.select(Users))
+    try:
+        users = Users.query.all()
+        return jsonify([user.to_dict() for user in users])
+    except Exception as e:
+        return jsonify({'error': str(e)}), InternalServerError.code
 
-    users = [user._asdict() for user in result.scalars()]
-    print(jsonify(users))
 
-    return jsonify(users)
+def to_dict(self):
+    return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 
 if __name__ == "__main__":
