@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import BadRequest, InternalServerError
 
@@ -38,9 +38,19 @@ def index():
         return jsonify({'error': str(e)}), InternalServerError.code
 
 
-@app.route("/login")
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template("login.html")
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        user = Users.query.filter_by(email=email).first()
+
+        if user and user.password == password:
+            return redirect('/')
+        else:
+            return render_template('login.html', error='Invalid credentials')
+    return render_template('login.html')
 
 
 @app.route("/register", methods=["GET", "POST"])
