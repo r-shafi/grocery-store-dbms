@@ -1,0 +1,45 @@
+{% extends 'parent.html' %} {% block title %}<title>Add Product</title>{%
+endblock %} {% block body %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Add New Product</h2>
+  <form action="/admin/add_product" method="POST" class="w-50 mx-auto">
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        name="name"
+        placeholder="Product Name"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <input
+        type="number"
+        class="form-control"
+        name="price"
+        step="0.01"
+        placeholder="Price"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <input
+        type="number"
+        class="form-control"
+        name="quantity"
+        placeholder="Quantity"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        name="image"
+        placeholder="Image URL (optional)"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Add Product</button>
+  </form>
+</div>
+{% endblock %}
