@@ -1,0 +1,82 @@
+{% extends 'parent.html' %} {% block title %}<title>Admin Dashboard</title>{%
+endblock %} {% block body %}
+<div class="container mt-5">
+  <h1 class="text-center mb-4">Admin Dashboard</h1>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          Products
+          <a href="/admin/add_product" class="btn btn-sm btn-success float-end"
+            >Add New Product</a
+          >
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in products %}
+            <tr>
+              <td>{{ product.name }}</td>
+              <td>${{ product.price }}</td>
+              <td>{{ product.quantity }}</td>
+              <td>
+                <form
+                  action="/admin/delete_product/{{ product.id }}"
+                  method="POST"
+                >
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">Users</div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Admin</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ 'Yes' if user.is_admin else 'No' }}</td>
+              <td>
+                {% if not user.is_admin %}
+                <form action="/admin/delete_user/{{ user.id }}" method="POST">
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    Delete
+                  </button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
