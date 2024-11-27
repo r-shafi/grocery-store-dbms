@@ -1,24 +1,28 @@
 {% extends 'parent.html' %} {% block title %}
 <title>Login Page</title>
 {% endblock title %} {% block body %}
-
 <div class="container">
   <h2 class="text-center mb-5">Login</h2>
 
   {% if error %}
-  <div class="alert alert-danger">{{ error }}</div>
+  <div class="alert alert-danger text-center">{{ error }}</div>
   {% endif %}
 
   <form class="d-grid gap-2 w-50 mx-auto" action="/login" method="post">
-    <input type="text" class="form-control" placeholder="Email" name="email" />
-
     <input
       type="text"
       class="form-control"
+      placeholder="Email"
+      name="email"
+      required
+    />
+    <input
+      type="password"
+      class="form-control"
       placeholder="Password"
       name="password"
+      required
     />
-
     <button type="submit" class="btn btn-outline-danger mb-5">Login</button>
     <a class="text-center" href="/register">
       If not registered then register now!
