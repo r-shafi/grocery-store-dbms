@@ -16,18 +16,21 @@
   </head>
   <body class="w-75 mx-auto">
     <header class="d-flex justify-content-between py-2">
-      <span></span>
       <a href="/" class="text-decoration-none text-secondary">
         <h1>Grocery Store</h1>
       </a>
-      {% if username %}
-      <div class="d-flex align-items-center">
-        <span class="me-3">Hello, {{ username }}!</span>
-        <a href="/logout" class="btn btn-secondary">Logout</a>
+      <div class="d-flex align-items-center gap-3">
+        {% if is_admin %}
+        <a href="/admin/dashboard">Admin Dashboard</a>
+        {% endif %} {% if username %}
+        <div class="d-flex align-items-center">
+          <span class="me-3">Hello, {{ username }}!</span>
+          <a href="/logout" class="btn btn-secondary">Logout</a>
+        </div>
+        {% else %}
+        <a href="/login" class="btn btn-secondary">Login</a>
+        {% endif %}
       </div>
-      {% else %}
-      <a href="/login" class="btn text-secondary">Login</a>
-      {% endif %}
     </header>
 
     <div class="py-4">
