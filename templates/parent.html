@@ -20,7 +20,14 @@
       <a href="/" class="text-decoration-none text-secondary">
         <h1>Grocery Store</h1>
       </a>
+      {% if username %}
+      <div class="d-flex align-items-center">
+        <span class="me-3">Hello, {{ username }}!</span>
+        <a href="/logout" class="btn btn-secondary">Logout</a>
+      </div>
+      {% else %}
       <a href="/login" class="btn text-secondary">Login</a>
+      {% endif %}
     </header>
 
     <div class="py-4">
