@@ -32,7 +32,7 @@ def login():
             session['user_id'] = user.id
             session['is_admin'] = user.is_admin
 
-            return redirect(url_for('admin_dashboard' if user.is_admin else 'index'))
+            return redirect(url_for('admin.admin_dashboard' if user.is_admin else '/'))
 
         return render_template('login.html', error='Invalid credentials')
 
