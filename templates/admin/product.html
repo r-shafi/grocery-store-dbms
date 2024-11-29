@@ -1,14 +1,25 @@
-{% extends 'parent.html' %} {% block title %}<title>Add Product</title>{%
-endblock %} {% block body %}
+{% extends 'parent.html' %}
+
+{% block title %}<title>{{ 'Edit' if product else 'Add' }} Product</title>{% endblock %}
+
+{% block body %}
 <div class="container mt-5">
-  <h2 class="text-center mb-4">Add New Product</h2>
-  <form action="/admin/add_product" method="POST" class="w-50 mx-auto">
+  <h2 class="text-center mb-4">{{ 'Edit' if product else 'Add' }} Product</h2>
+  <form
+    action="{{ url_for('admin.add_or_edit_product', product_id=product.id if product else None) }}"
+    method="POST"
+    class="w-50 mx-auto"
+  >
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
     <div class="mb-3">
       <input
         type="text"
         class="form-control"
         name="name"
         placeholder="Product Name"
+        value="{{ product.name if product else '' }}"
         required
       />
     </div>
@@ -19,6 +30,7 @@ endblock %} {% block body %}
         name="price"
         step="0.01"
         placeholder="Price"
+        value="{{ product.price if product else '' }}"
         required
       />
     </div>
@@ -28,8 +40,29 @@ endblock %} {% block body %}
         class="form-control"
         name="quantity"
         placeholder="Quantity"
+        value="{{ product.quantity if product else '' }}"
         required
       />
+    </div>
+    <div class="mb-3">
+      <textarea
+        class="form-control"
+        name="description"
+        placeholder="Description"
+      >{{ product.description if product else '' }}</textarea>
+    </div>
+    <div class="mb-3">
+      <select class="form-control" name="category">
+        <option value="">Select Category</option>
+        {% for category in categories %}
+        <option
+          value="{{ category.id }}"
+          {% if product and product.category_id == category.id %}selected{% endif %}
+        >
+          {{ category.name }}
+        </option>
+        {% endfor %}
+      </select>
     </div>
     <div class="mb-3">
       <input
@@ -37,9 +70,12 @@ endblock %} {% block body %}
         class="form-control"
         name="image"
         placeholder="Image URL (optional)"
+        value="{{ product.image if product else '' }}"
       />
     </div>
-    <button type="submit" class="btn btn-primary w-100">Add Product</button>
+    <button type="submit" class="btn btn-primary w-100">
+      {{ 'Update' if product else 'Add' }} Product
+    </button>
   </form>
 </div>
 {% endblock %}
