@@ -11,7 +11,7 @@ from flask import session
 
 @app.context_processor
 def user():
-    return {'username': session.get('username', None)}
+    return {'username': session.get('username', None), 'is_admin': session.get('is_admin', False)}
 
 init_routes(app)
 
