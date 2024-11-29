@@ -1,4 +1,4 @@
-from flask import Blueprint, session, redirect, url_for, render_template, request, jsonify
+from flask import Blueprint, session, redirect, url_for, render_template, request, jsonify, flash
 from models.models import Product, Users, Order, Category, OrderStatus
 from configs.database import db
 from werkzeug.security import generate_password_hash
@@ -30,8 +30,11 @@ def admin_dashboard():
 
 
 @admin_blueprint.route('/product', methods=['GET', 'POST'])
-def add_product():
+@admin_blueprint.route('/product/<int:product_id>', methods=['GET', 'POST'])
+def add_or_edit_product(product_id=None):
     categories = Category.query.all()
+    product = Product.query.get(product_id) if product_id else None
+    
     if request.method == 'POST':
         name = request.form.get('name')
         price = request.form.get('price')
@@ -39,20 +42,48 @@ def add_product():
         description = request.form.get('description')
         category_id = request.form.get('category')
         image = request.form.get('image')
+        
         if not all([name, price, quantity]):
-            return jsonify({'error': 'All fields are required'}), 400
-        new_product = Product(
-            name=name, 
-            price=float(price), 
-            quantity=int(quantity),
-            description=description,
-            category_id=category_id,
-            image=image
-        )
-        db.session.add(new_product)
+            error = "All fields (Name, Price, Quantity) are required."
+            return render_template('admin/product.html', categories=categories, product=product, error=error)
+        
+        if category_id and not Category.query.get(category_id):
+            error = "Invalid category selected."
+            return render_template('admin/product.html', categories=categories, product=product, error=error)
+
+        try:
+            price = float(price)
+            quantity = int(quantity)
+        except ValueError:
+            error = "Price must be a number and Quantity must be an integer."
+            return render_template('admin/product.html', categories=categories, product=product, error=error)
+        
+        if product:
+            product.name = name
+            product.price = price
+            product.quantity = quantity
+            product.description = description
+            product.category_id = category_id
+            product.image = image
+            message = "Product updated successfully!"
+        else:
+            product = Product(
+                name=name,
+                price=price,
+                quantity=quantity,
+                description=description,
+                category_id=category_id,
+                image=image,
+            )
+            db.session.add(product)
+            message = "Product added successfully!"
+        
         db.session.commit()
-        return jsonify({'message': 'Product added successfully'}), 201
-    return render_template('admin/product.html', categories=categories)
+        flash(message, 'success')
+        return redirect(url_for('admin.add_or_edit_product', product_id=product.id))
+
+    return render_template('admin/product.html', categories=categories, product=product)
+
 
 
 @admin_blueprint.route('/update_order/<int:order_id>', methods=['POST'])
@@ -83,7 +114,10 @@ def create_category():
     return jsonify({'message': 'Category created successfully'}), 201
 
 @admin_blueprint.route('/user', methods=['GET', 'POST'])
-def add_user():
+@admin_blueprint.route('/user/<int:user_id>', methods=['GET', 'POST'])
+def add_or_edit_user(user_id=None):
+    user = Users.query.get(user_id) if user_id else None
+
     if request.method == 'POST':
         from .auth import is_valid_email, is_valid_password
         name = request.form.get('name')
@@ -93,26 +127,27 @@ def add_user():
 
 
         if not all([name, email, password]):
-            return jsonify({'error': 'All fields are required'}), 400
+            error = "All fields (Name, Email, Password) are required."
+            return render_template('admin/user.html', user=user, error=error)
 
         if not is_valid_email(email):
-            return jsonify({'error': 'Invalid email format'}), 400
+            return render_template('admin/user.html', user=user, error="Invalid email format")
         
         if not is_valid_password(password):
-            return jsonify({'error': 'Password must be at least 8 characters, include one letter, one number, and one special character'}), 400
+            return render_template('admin/user.html', user=user, error="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number")
 
         existing_user = Users.query.filter_by(email=email).first()
         if existing_user:
-            return jsonify({'error': 'Email already registered'}), 400
+            return render_template('admin/user.html', user=user, error="Email already registered")
         
         hashed_password = generate_password_hash(password)
         new_user = Users(name=name, email=email, password=hashed_password, is_admin=role == 'admin')
         
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({'message': 'User added successfully'}), 201
+        return redirect(url_for('admin.admin_dashboard'))
 
-    return render_template('admin/user.html')
+    return render_template('admin/user.html', user=user)
 
 @admin_blueprint.route('/delete_product/<int:product_id>', methods=['POST'])
 def delete_product(product_id):
