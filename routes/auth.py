@@ -30,6 +30,7 @@ def login():
 
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
+            session['username'] = user.name
             session['is_admin'] = user.is_admin
 
             return redirect(url_for('admin.admin_dashboard' if user.is_admin else '/'))
