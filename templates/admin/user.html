@@ -1,0 +1,42 @@
+{% extends 'parent.html' %} {% block title %}<title>Add User</title>{% endblock
+%} {% block body %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Add New User</h2>
+  <form action="/admin/user" method="POST" class="w-50 mx-auto">
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        name="name"
+        placeholder="User Name"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <input
+        type="email"
+        class="form-control"
+        name="email"
+        placeholder="Email"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <input
+        type="password"
+        class="form-control"
+        name="Password"
+        placeholder="password"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <select name="role" class="form-select">
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Add User</button>
+  </form>
+</div>
+{% endblock %}
