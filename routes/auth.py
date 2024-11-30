@@ -16,6 +16,9 @@ def is_valid_password(password):
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
+    if 'user_id' in session:
+        return redirect(url_for('public.index'))
+
     if request.method == 'POST':
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '').strip()
@@ -42,6 +45,9 @@ def login():
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
+    if 'user_id' in session:
+        return redirect(url_for('public.index'))
+    
     if request.method == 'POST':
         try:
             name = request.form.get('name', '').strip()
