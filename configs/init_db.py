@@ -1,6 +1,7 @@
 from werkzeug.security import generate_password_hash
 from configs.database import db
 from models.models import Users, Category
+from .seed_db import seed_demo_data
 
 def init_db():
     db.create_all()
@@ -18,3 +19,6 @@ def init_db():
             db.session.add(Category(name=cat_name))
 
     db.session.commit()
+
+    if Users.query.count() == 1:
+        seed_demo_data()
