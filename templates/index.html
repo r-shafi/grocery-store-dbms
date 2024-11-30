@@ -2,19 +2,25 @@
 <title>Products Display</title>
 {% endblock title %} {% block body %}
 
-<div class="container d-flex flex-wrap gap-2">
+<div class="container d-flex flex-wrap gap-4 mx-auto">
   {% for product in products %}
-  <div class="border border-secondary p-2">
+  <div class="card" style="width: 18rem">
     <img
       src="{{ product.image or 'https://via.placeholder.com/150' }}"
-      class="rounded float-start"
+      class="card-img-top object-fit-cover"
+      style="height: 300px"
       alt="{{ product.name }}"
-      height="150"
     />
-    <p class="px-4">{{ product.name }}</p>
-    <p class="px-4">Price {{ product.price }}</p>
-    <button class="btn btn-outline-danger mx-4">Order Now</button>
+    <div class="card-body">
+      <h5 class="card-title">
+        {{ product.name }} -
+        <span class="text-danger">${{ product.price }}</span>
+      </h5>
+      <p class="card-text">{{ product.description }}</p>
+      <a href="#" class="btn btn-primary">Order Now</a>
+    </div>
   </div>
+
   {% endfor %}
 </div>
 
