@@ -19,6 +19,21 @@
       <a href="/" class="text-decoration-none text-secondary">
         <h1>Grocery Store</h1>
       </a>
+      <form
+        action="{{ url_for('public.search') }}"
+        method="GET"
+        class="d-flex align-items-center"
+      >
+        <input
+          type="text"
+          name="query"
+          placeholder="Search products..."
+          class="form-control me-2"
+          aria-label="Search"
+          required
+        />
+        <button type="submit" class="btn btn-outline-secondary">Search</button>
+      </form>
       <div class="d-flex align-items-center gap-3">
         {% if is_admin %}
         <a href="/admin/dashboard">Admin Dashboard</a>
