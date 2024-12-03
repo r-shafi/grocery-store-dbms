@@ -1,0 +1,33 @@
+{% extends 'parent.html' %} {% block title %}
+<title>{{ 'Edit' if category else 'Add' }} Category</title> {% endblock %} {%
+block body %}
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">{{ 'Edit' if category else 'Add' }} Category</h2>
+  <form
+    action="{{ url_for('admin.add_or_edit_category', catregory_id=category.id if category else None) }}"
+    method="POST"
+    class="w-50 mx-auto"
+  >
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        name="name"
+        placeholder="Category Name"
+        value="{{ request.form.get('name', category.name if category else '') }}"
+        required
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">
+      {{ 'Update' if category else 'Add' }} Category
+    </button>
+  </form>
+</div>
+
+{% endblock %}
