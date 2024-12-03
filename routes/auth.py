@@ -12,8 +12,7 @@ def is_valid_email(email):
     return match and email.split('@')[-1] in known_providers
 
 def is_valid_password(password):
-    regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
-    return re.match(regex, password)
+    return len(password) >= 8
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
@@ -84,6 +83,7 @@ def register():
 
             session['user_id'] = new_user.id
             session['is_admin'] = new_user.is_admin
+            session['username'] = new_user.name
             return redirect(url_for('public.index'))
         except Exception as e:
             db.session.rollback()
