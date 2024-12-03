@@ -1,46 +1,66 @@
 {% extends 'parent.html' %} {% block title %}
-
 <title>Register Page</title>
-
 {% endblock title %} {% block body %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Register</h2>
 
-<div class="container">
-  <h2 class="text-center mb-5">Register</h2>
+  <form
+    class="d-grid gap-3 w-50 mx-auto"
+    action="{{ url_for('auth.register') }}"
+    method="POST"
+  >
+    {% if error %}
+    <div class="alert alert-danger text-center">{{ error }}</div>
+    {% endif %}
 
-  <form class="d-grid gap-3 w-50 mx-auto" action="/register" method="post">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Name"
-      name="name"
-      autocomplete="name"
-      required
-    />
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        name="name"
+        placeholder="Enter your name"
+        value="{{ request.form.get('name', '') }}"
+        autocomplete="name"
+        required
+      />
+    </div>
 
-    <input
-      type="email"
-      class="form-control"
-      placeholder="Email"
-      name="email"
-      autocomplete="email"
-      required
-    />
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        placeholder="Enter your email"
+        value="{{ request.form.get('email', '') }}"
+        autocomplete="email"
+        required
+      />
+    </div>
 
-    <input
-      type="password"
-      class="form-control"
-      placeholder="Password"
-      name="password"
-      autocomplete="new-password"
-      required
-    />
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+        placeholder="Enter a secure password"
+        autocomplete="new-password"
+        required
+      />
+    </div>
 
-    <button type="submit" class="btn btn-outline-danger mb-5">Register</button>
+    <button type="submit" class="btn btn-primary w-100">Register</button>
 
-    <a class="text-center" href="/login">
-      If already registered then login now!
-    </a>
+    <div class="text-center mt-3">
+      <a href="{{ url_for('auth.login') }}" class="text-decoration-none">
+        Already registered? Login here!
+      </a>
+    </div>
   </form>
 </div>
-
-{% endblock body %}
+{% endblock %}
