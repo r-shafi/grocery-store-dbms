@@ -2,6 +2,7 @@ from flask import Blueprint, session, redirect, url_for, render_template, reques
 from models.models import Product, Users, Order, Category, OrderStatus
 from configs.database import db
 from werkzeug.security import generate_password_hash
+from datetime import datetime
 
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -93,25 +94,27 @@ def update_order_status(order_id):
     order.status = status
     db.session.commit()
     
-    return redirect(url_for('admin_orders'))
+    return redirect(url_for('admin.admin_dashboard'))
 
 
-@admin_blueprint.route('/orders')
-def admin_orders():
-    orders = Order.query.all()
-    return render_template('admin_orders.html', orders=orders, statuses=vars(OrderStatus))
+@admin_blueprint.route('/category', methods=['GET', 'POST'])
+@admin_blueprint.route('/category/<int:category_id>', methods=['GET', 'POST'])
+def create_category(category_id=None):
+    category = Category.query.get(category_id) if category_id else None
 
-@admin_blueprint.route('/create_category', methods=['POST'])
-def create_category():
-    name = request.form.get('name')
+    if request.method == 'POST':
+        name = request.form.get('name')
+        
+        if not name or name.len() < 3:
+            error = "Category name must be at least 3 characters long."
+            return render_template('admin/category.html', category=category, error=error)
+        
+        new_category = Category(name=name)
+        db.session.add(new_category)
+        db.session.commit()
+        return redirect(url_for('admin.admin_dashboard'))
     
-    if not name:
-        return jsonify({'error': 'Name is required'}), 400
-    
-    new_category = Category(name=name)
-    db.session.add(new_category)
-    db.session.commit()
-    return jsonify({'message': 'Category created successfully'}), 201
+    return render_template('admin/category.html', category=category)
 
 @admin_blueprint.route('/user', methods=['GET', 'POST'])
 @admin_blueprint.route('/user/<int:user_id>', methods=['GET', 'POST'])
@@ -154,11 +157,11 @@ def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
     db.session.delete(product)
     db.session.commit()
-    return jsonify({'message': 'Product deleted successfully'}), 200
+    return redirect(url_for('admin.admin_dashboard'))
 
 @admin_blueprint.route('/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
     user = Users.query.get_or_404(user_id)
     db.session.delete(user)
     db.session.commit()
-    return jsonify({'message': 'User deleted successfully'}), 200
+    return redirect(url_for('admin.admin_dashboard'))
