@@ -69,18 +69,21 @@ def view_cart():
 
 @order_blueprint.route('/cart/add', methods=['POST'])
 def add_to_cart():
-    product_id = request.json.get('product_id')
-    quantity = request.json.get('quantity', 1)
+    product_id = request.form.get('product_id')
+    quantity = int(request.form.get('quantity', 1))
     
     if not product_id:
-        return jsonify({'error': 'Product ID is required'}), 400
+        flash('Product ID is required.', 'error')
+        return redirect(url_for('public.index'))
     
     product = Product.query.get(product_id)
     if not product:
-        return jsonify({'error': 'Product not found'}), 404
+        flash('Product not found.', 'error')
+        return redirect(url_for('public.index'))
 
     if product.quantity < quantity:
-        return jsonify({'error': 'Insufficient stock'}), 400
+        flash('Insufficient stock.', 'error')
+        return redirect(url_for('public.index'))
     
     cart_item = Cart.query.filter_by(user_id=session['user_id'], product_id=product_id).first()
     
@@ -91,7 +94,9 @@ def add_to_cart():
         db.session.add(cart_item)
     
     db.session.commit()
-    return jsonify({'message': 'Product added to cart'}), 200
+    flash('Product added to cart.', 'success')
+    return redirect(url_for('public.index'))
+
 
 
 @order_blueprint.route('/cart/remove', methods=['POST'])
@@ -130,3 +135,43 @@ def cancel_order(order_id):
     db.session.commit()
     
     return jsonify({'message': 'Order canceled successfully'}), 200
+
+from flask import flash
+
+
+
+@order_blueprint.route('/order/now', methods=['POST'])
+def order_now():
+    product_id = request.form.get('product_id')
+    quantity = int(request.form.get('quantity', 1))
+    
+    if not product_id:
+        flash('Product ID is required.', 'error')
+        return redirect(url_for('public.index'))
+    
+    product = Product.query.get(product_id)
+    if not product:
+        flash('Product not found.', 'error')
+        return redirect(url_for('public.index'))
+
+    if product.quantity < quantity:
+        flash('Insufficient stock.', 'error')
+        return redirect(url_for('public.index'))
+    
+    order = Order(user_id=session['user_id'], total_price=0)
+    db.session.add(order)
+    db.session.flush()
+
+    product.quantity -= quantity
+    order_item = OrderItem(
+        order_id=order.id,
+        product_id=product_id,
+        quantity=quantity,
+        price=product.price * quantity
+    )
+    order.total_price = order_item.price
+    db.session.add(order_item)
+    db.session.commit()
+
+    flash('Order placed successfully!', 'success')
+    return redirect(url_for('order.view_cart'))
