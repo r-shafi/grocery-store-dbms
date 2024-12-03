@@ -1,32 +1,50 @@
 {% extends 'parent.html' %} {% block title %}
 <title>Login Page</title>
 {% endblock title %} {% block body %}
-<div class="container">
-  <h2 class="text-center mb-5">Login</h2>
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Login</h2>
 
-  {% if error %}
-  <div class="alert alert-danger text-center">{{ error }}</div>
-  {% endif %}
+  <form
+    action="{{ url_for('auth.login') }}"
+    method="POST"
+    class="d-grid gap-3 w-50 mx-auto"
+  >
+    {% if error %}
+    <div class="alert alert-danger text-center">{{ error }}</div>
+    {% endif %}
 
-  <form class="d-grid gap-2 w-50 mx-auto" action="/login" method="post">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Email"
-      name="email"
-      required
-    />
-    <input
-      type="password"
-      class="form-control"
-      placeholder="Password"
-      name="password"
-      required
-    />
-    <button type="submit" class="btn btn-outline-danger mb-5">Login</button>
-    <a class="text-center" href="/register">
-      If not registered then register now!
-    </a>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        placeholder="Enter your email"
+        value="{{ request.form.get('email', '') }}"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+        required
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Login</button>
+
+    <div class="text-center mt-3">
+      <a href="{{ url_for('auth.register') }}" class="text-decoration-none">
+        Not registered? Create an account here!
+      </a>
+    </div>
   </form>
 </div>
-{% endblock body %}
+{% endblock %}
