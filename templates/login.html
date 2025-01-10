@@ -1,23 +1,18 @@
 {% extends 'parent.html' %} {% block title %}
 <title>Login Page</title>
 {% endblock title %} {% block body %}
-<div class="container mt-5">
-  <h2 class="text-center mb-4">Login</h2>
+<div>
+  <h2>Login</h2>
 
-  <form
-    action="{{ url_for('auth.login') }}"
-    method="POST"
-    class="d-grid gap-3 w-50 mx-auto"
-  >
+  <form action="{{ url_for('auth.login') }}" method="POST">
     {% if error %}
-    <div class="alert alert-danger text-center">{{ error }}</div>
+    <div>{{ error }}</div>
     {% endif %}
 
-    <div class="mb-3">
-      <label for="email" class="form-label">Email</label>
+    <div>
+      <label for="email">Email</label>
       <input
         type="email"
-        class="form-control"
         id="email"
         name="email"
         placeholder="Enter your email"
@@ -26,11 +21,10 @@
       />
     </div>
 
-    <div class="mb-3">
-      <label for="password" class="form-label">Password</label>
+    <div>
+      <label for="password">Password</label>
       <input
         type="password"
-        class="form-control"
         id="password"
         name="password"
         placeholder="Enter your password"
@@ -38,10 +32,10 @@
       />
     </div>
 
-    <button type="submit" class="btn btn-primary w-100">Login</button>
+    <button type="submit">Login</button>
 
-    <div class="text-center mt-3">
-      <a href="{{ url_for('auth.register') }}" class="text-decoration-none">
+    <div>
+      <a href="{{ url_for('auth.register') }}">
         Not registered? Create an account here!
       </a>
     </div>

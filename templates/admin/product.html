@@ -3,30 +3,30 @@
 {% block title %}<title>{{ 'Edit' if product else 'Add' }} Product</title>{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-  <h2 class="text-center mb-4">{{ 'Edit' if product else 'Add' }} Product</h2>
+<div >
+  <h2 >{{ 'Edit' if product else 'Add' }} Product</h2>
   <form
     action="{{ url_for('admin.add_or_edit_product', product_id=product.id if product else None) }}"
     method="POST"
-    class="w-50 mx-auto"
+    
   >
     {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
+    <div >{{ error }}</div>
     {% endif %}
-    <div class="mb-3">
+    <div >
       <input
         type="text"
-        class="form-control"
+        
         name="name"
         placeholder="Product Name"
         value="{{ product.name if product else '' }}"
         required
       />
     </div>
-    <div class="mb-3">
+    <div >
       <input
         type="number"
-        class="form-control"
+        
         name="price"
         step="0.01"
         placeholder="Price"
@@ -34,25 +34,25 @@
         required
       />
     </div>
-    <div class="mb-3">
+    <div >
       <input
         type="number"
-        class="form-control"
+        
         name="quantity"
         placeholder="Quantity"
         value="{{ product.quantity if product else '' }}"
         required
       />
     </div>
-    <div class="mb-3">
+    <div >
       <textarea
-        class="form-control"
+        
         name="description"
         placeholder="Description"
       >{{ product.description if product else '' }}</textarea>
     </div>
-    <div class="mb-3">
-      <select class="form-control" name="category">
+    <div >
+      <select  name="category">
         <option value="">Select Category</option>
         {% for category in categories %}
         <option
@@ -64,16 +64,16 @@
         {% endfor %}
       </select>
     </div>
-    <div class="mb-3">
+    <div >
       <input
         type="text"
-        class="form-control"
+        
         name="image"
         placeholder="Image URL (optional)"
         value="{{ product.image if product else '' }}"
       />
     </div>
-    <button type="submit" class="btn btn-primary w-100">
+    <button type="submit" >
       {{ 'Update' if product else 'Add' }} Product
     </button>
   </form>

@@ -1,23 +1,18 @@
 {% extends 'parent.html' %} {% block title %}
 <title>Register Page</title>
 {% endblock title %} {% block body %}
-<div class="container mt-5">
-  <h2 class="text-center mb-4">Register</h2>
+<div>
+  <h2>Register</h2>
 
-  <form
-    class="d-grid gap-3 w-50 mx-auto"
-    action="{{ url_for('auth.register') }}"
-    method="POST"
-  >
+  <form action="{{ url_for('auth.register') }}" method="POST">
     {% if error %}
-    <div class="alert alert-danger text-center">{{ error }}</div>
+    <div>{{ error }}</div>
     {% endif %}
 
-    <div class="mb-3">
-      <label for="name" class="form-label">Name</label>
+    <div>
+      <label for="name">Name</label>
       <input
         type="text"
-        class="form-control"
         id="name"
         name="name"
         placeholder="Enter your name"
@@ -27,11 +22,10 @@
       />
     </div>
 
-    <div class="mb-3">
-      <label for="email" class="form-label">Email</label>
+    <div>
+      <label for="email">Email</label>
       <input
         type="email"
-        class="form-control"
         id="email"
         name="email"
         placeholder="Enter your email"
@@ -41,11 +35,10 @@
       />
     </div>
 
-    <div class="mb-3">
-      <label for="password" class="form-label">Password</label>
+    <div>
+      <label for="password">Password</label>
       <input
         type="password"
-        class="form-control"
         id="password"
         name="password"
         placeholder="Enter a secure password"
@@ -54,10 +47,10 @@
       />
     </div>
 
-    <button type="submit" class="btn btn-primary w-100">Register</button>
+    <button type="submit">Register</button>
 
-    <div class="text-center mt-3">
-      <a href="{{ url_for('auth.login') }}" class="text-decoration-none">
+    <div>
+      <a href="{{ url_for('auth.login') }}">
         Already registered? Login here!
       </a>
     </div>

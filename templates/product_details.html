@@ -1,0 +1,45 @@
+{% extends 'parent.html' %} {% block title %}
+<title>{{ product.name }} - Details</title>
+{% endblock title %} {% block body %}
+<div>
+  <div>
+    <div>
+      <img
+        src="{{ product.image or 'https://via.placeholder.com/600x400' }}"
+        alt="{{ product.name }}"
+      />
+    </div>
+
+    <div>
+      <h1>{{ product.name }}</h1>
+      <h4>${{ product.price }}</h4>
+      <p>
+        <strong>Category:</strong> {{ product.category.name if product.category
+        else "Uncategorized" }}
+      </p>
+      <p>{{ product.description }}</p>
+
+      <h5>Available Quantity: {{ product.quantity }}</h5>
+      <p>
+        <small>Unit: {{ product.unit or "N/A" }}</small>
+      </p>
+
+      <form action="{{ url_for('order.add_to_cart') }}" method="post">
+        <input type="hidden" name="product_id" value="{{ product.id }}" />
+        <input type="hidden" name="quantity" value="1" />
+        <button type="submit">Add to Cart</button>
+      </form>
+
+      <form action="{{ url_for('order.order_now') }}" method="post">
+        <input type="hidden" name="product_id" value="{{ product.id }}" />
+        <input type="hidden" name="quantity" value="1" />
+        <button type="submit">Order Now</button>
+      </form>
+    </div>
+  </div>
+
+  <div>
+    <a href="{{ url_for('public.index') }}">Back to Products</a>
+  </div>
+</div>
+{% endblock %}

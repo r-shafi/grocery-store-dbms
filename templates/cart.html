@@ -1,13 +1,9 @@
-{% extends 'parent.html' %}
-
-{% block title %}
+{% extends 'parent.html' %} {% block title %}
 <title>My Cart</title>
-{% endblock %}
-
-{% block body %}
-<div class="container mt-5">
-  <h2 class="text-center mb-4">My Cart</h2>
-  <table class="table table-striped">
+{% endblock %} {% block body %}
+<div>
+  <h2>My Cart</h2>
+  <table>
     <thead>
       <tr>
         <th>Product</th>
@@ -23,15 +19,19 @@
         <td>{{ item.quantity }}</td>
         <td>${{ "%.2f"|format(item.product.price * item.quantity) }}</td>
         <td>
-          <form action="/order/cart/remove" method="POST" class="d-inline">
-            <input type="hidden" name="product_id" value="{{ item.product_id }}">
-            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+          <form action="/order/cart/remove" method="POST">
+            <input
+              type="hidden"
+              name="product_id"
+              value="{{ item.product_id }}"
+            />
+            <button type="submit">Remove</button>
           </form>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  <a href="/order/place_order" class="btn btn-primary">Place Order</a>
+  <a href="/order/place_order">Place Order</a>
 </div>
 {% endblock %}
