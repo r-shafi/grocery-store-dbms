@@ -1,0 +1,184 @@
+from flask import flash, Blueprint, session, redirect, url_for, render_template, request, jsonify
+from configs.database import db
+from sqlalchemy.orm import joinedload
+from datetime import datetime
+from models.Order import Order
+from models.OrderItem import OrderItem
+from models.Cart import Cart
+from models.Product import Product
+
+order_blueprint = Blueprint('order', __name__, url_prefix='/order')
+
+
+@order_blueprint.before_request
+def check_user():
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+
+
+@order_blueprint.route('/my_orders', methods=['GET'])
+def user_orders():
+    orders = Order.query.filter_by(user_id=session['user_id']).order_by(
+        Order.created_at.desc()).all()
+    return render_template('orders.html', orders=orders)
+
+
+@order_blueprint.route('/place_order', methods=['POST'])
+def place_order():
+    user_id = session['user_id']
+    cart_items = Cart.query.filter_by(user_id=user_id).options(
+        joinedload(Cart.product)).all()
+
+    if not cart_items:
+        flash("Your cart is empty.", "error")
+        return redirect(url_for('order.view_cart'))
+
+    total_price = 0
+    order = Order(user_id=user_id, total_price=0, status='Pending')
+    db.session.add(order)
+    db.session.flush()
+
+    for cart_item in cart_items:
+        product = cart_item.product
+
+        if not product or product.quantity < cart_item.quantity:
+            db.session.rollback()
+            flash(
+                f"Insufficient stock for {product.name}" if product else "Product not found.", "error")
+            return redirect(url_for('order.view_cart'))
+
+        product.quantity -= cart_item.quantity
+        order_item = OrderItem(
+            order_id=order.id,
+            product_id=cart_item.product_id,
+            quantity=cart_item.quantity,
+            price=product.price * cart_item.quantity
+        )
+        total_price += order_item.price
+
+        db.session.add(order_item)
+        db.session.delete(cart_item)
+
+    order.total_price = total_price
+    db.session.commit()
+
+    flash("Order placed successfully!", "success")
+    return redirect(url_for('order.user_orders'))
+
+
+@order_blueprint.route('/cart', methods=['GET'])
+def view_cart():
+    user_id = session['user_id']
+    cart_items = Cart.query.filter_by(user_id=user_id).options(
+        joinedload(Cart.product)).all()
+    total_price = sum(
+        item.quantity * item.product.price for item in cart_items)
+    return render_template('cart.html', cart_items=cart_items, total_price=total_price)
+
+
+@order_blueprint.route('/cart/add', methods=['POST'])
+def add_to_cart():
+    user_id = session['user_id']
+    product_id = request.form.get('product_id')
+    quantity = int(request.form.get('quantity', 1))
+
+    if not product_id:
+        flash("Product ID is required.", "error")
+        return redirect(url_for('public.index'))
+
+    product = Product.query.get(product_id)
+    if not product or product.quantity < quantity:
+        flash("Insufficient stock or product not found.", "error")
+        return redirect(url_for('public.index'))
+
+    cart_item = Cart.query.filter_by(
+        user_id=user_id, product_id=product_id).first()
+
+    if cart_item:
+        cart_item.quantity += quantity
+    else:
+        cart_item = Cart(
+            user_id=user_id, product_id=product_id, quantity=quantity)
+        db.session.add(cart_item)
+
+    db.session.commit()
+    flash("Product added to cart.", "success")
+    return redirect(url_for('public.index'))
+
+
+@order_blueprint.route('/cart/remove', methods=['POST'])
+def remove_from_cart():
+    user_id = session['user_id']
+    product_id = request.json.get('product_id')
+
+    if not product_id:
+        return jsonify({'error': 'Product ID is required'}), 400
+
+    cart_item = Cart.query.filter_by(
+        user_id=user_id, product_id=product_id).first()
+
+    if cart_item:
+        db.session.delete(cart_item)
+        db.session.commit()
+        return jsonify({'message': 'Product removed from cart'}), 200
+
+    return jsonify({'error': 'Product not found in cart'}), 404
+
+
+@order_blueprint.route('/cancel/<int:order_id>', methods=['POST'])
+def cancel_order(order_id):
+    user_id = session['user_id']
+    order = Order.query.filter_by(id=order_id, user_id=user_id).first()
+
+    if not order:
+        flash("Order not found.", "error")
+        return redirect(url_for('order.user_orders'))
+
+    if order.status != 'Pending':
+        flash("Only pending orders can be canceled.", "error")
+        return redirect(url_for('order.user_orders'))
+
+    for item in order.order_items:
+        product = Product.query.get(item.product_id)
+        product.quantity += item.quantity
+
+    order.status = 'Canceled'
+    order.updated_at = datetime.now()
+    db.session.commit()
+
+    flash("Order canceled successfully.", "success")
+    return redirect(url_for('order.user_orders'))
+
+
+@order_blueprint.route('/order_now', methods=['POST'])
+def order_now():
+    user_id = session['user_id']
+    product_id = request.form.get('product_id')
+    quantity = int(request.form.get('quantity', 1))
+
+    if not product_id:
+        flash("Product ID is required.", "error")
+        return redirect(url_for('public.index'))
+
+    product = Product.query.get(product_id)
+    if not product or product.quantity < quantity:
+        flash("Insufficient stock or product not found.", "error")
+        return redirect(url_for('public.index'))
+
+    order = Order(user_id=user_id, total_price=0, status='Pending')
+    db.session.add(order)
+    db.session.flush()
+
+    product.quantity -= quantity
+    order_item = OrderItem(
+        order_id=order.id,
+        product_id=product_id,
+        quantity=quantity,
+        price=product.price * quantity
+    )
+    order.total_price = order_item.price
+    db.session.add(order_item)
+    db.session.commit()
+
+    flash("Order placed successfully!", "success")
+    return redirect(url_for('order.user_orders'))
