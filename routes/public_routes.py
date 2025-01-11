@@ -10,7 +10,7 @@ def index():
     try:
         categories = Category.query.all()
         products = Product.query.all()
-        return render_template("index.html", products=products, categories=categories)
+        return render_template("index.html", products=products, categories=categories, selected_category=None)
     except Exception as e:
         return render_template("error.html", error=f"An error occurred: {str(e)}")
 
