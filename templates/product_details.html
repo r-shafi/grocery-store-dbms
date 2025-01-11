@@ -1,45 +1,125 @@
 {% extends 'parent.html' %} {% block title %}
 <title>{{ product.name }} - Details</title>
 {% endblock title %} {% block body %}
-<div>
-  <div>
-    <div>
-      <img
-        src="{{ product.image or 'https://via.placeholder.com/600x400' }}"
-        alt="{{ product.name }}"
-      />
-    </div>
-
-    <div>
-      <h1>{{ product.name }}</h1>
-      <h4>${{ product.price }}</h4>
-      <p>
-        <strong>Category:</strong> {{ product.category.name if product.category
-        else "Uncategorized" }}
-      </p>
-      <p>{{ product.description }}</p>
-
-      <h5>Available Quantity: {{ product.quantity }}</h5>
-      <p>
-        <small>Unit: {{ product.unit or "N/A" }}</small>
-      </p>
-
-      <form action="{{ url_for('order.add_to_cart') }}" method="post">
-        <input type="hidden" name="product_id" value="{{ product.id }}" />
-        <input type="hidden" name="quantity" value="1" />
-        <button type="submit">Add to Cart</button>
-      </form>
-
-      <form action="{{ url_for('order.order_now') }}" method="post">
-        <input type="hidden" name="product_id" value="{{ product.id }}" />
-        <input type="hidden" name="quantity" value="1" />
-        <button type="submit">Order Now</button>
-      </form>
-    </div>
-  </div>
+<div class="grid md:grid-cols-2 gap-8 py-8">
+  <img
+    src="{{ product.image }}"
+    alt="Product"
+    class="w-full h-auto rounded-lg shadow-md mb-4"
+    id="mainImage"
+  />
 
   <div>
-    <a href="{{ url_for('public.index') }}">Back to Products</a>
+    <h2 class="text-3xl font-bold mb-2">{{ product.name }}</h2>
+    <p class="text-gray-600 mb-4">ID: {{ product.id }}</p>
+    <div class="mb-4">
+      <span class="text-2xl font-bold mr-2">৳{{ product.price }}</span>
+    </div>
+    <p class="text-gray-700 mb-6">{{ product.description }}</p>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div class="relative flex items-center">
+        <button
+          type="button"
+          id="decrement-button"
+          data-input-counter-decrement="quantity-input"
+          class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+        >
+          <svg
+            class="w-3 h-3 text-gray-900 dark:text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 18 2"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M1 1h16"
+            />
+          </svg>
+        </button>
+        <input
+          type="text"
+          id="quantity-input"
+          class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="0"
+          required
+        />
+        <button
+          type="button"
+          id="increment-button"
+          data-input-counter-increment="quantity-input"
+          class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+        >
+          <svg
+            class="w-3 h-3 text-gray-900 dark:text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 18 18"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 1v16M1 9h16"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <form
+        action="{{ url_for('order.add_to_cart') }}"
+        method="post"
+        class="flex"
+      >
+        <input type="hidden" name="product_id" value="{{ product.id }}" />
+        <button
+          type="submit"
+          class="flex-1 rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center justify-center gap-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="mr-2 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+          Add to cart
+        </button>
+      </form>
+    </div>
   </div>
 </div>
+
+<script>
+  document
+    .getElementById('increment-button')
+    .addEventListener('click', function () {
+      var input = document.getElementById('quantity-input');
+      var value = parseInt(input.value) || 0;
+      input.value = value + 1;
+    });
+
+  document
+    .getElementById('decrement-button')
+    .addEventListener('click', function () {
+      var input = document.getElementById('quantity-input');
+      var value = parseInt(input.value) || 0;
+      if (value > 1) {
+        input.value = value - 1;
+      }
+    });
+</script>
 {% endblock %}
