@@ -1,0 +1,15 @@
+{
+  "name": "grocery-store-dbms",
+  "version": "1.0.0",
+  "description": "![](https://static.vecteezy.com/system/resources/previews/002/035/105/non_2x/supermarket-grocery-store-interior-flat-illustration-vector.jpg)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
