@@ -6,7 +6,8 @@
     {% block title %}
     <title>Grocery Store</title>
     {% endblock title %}
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src='{{ url_for("static",
+    filename="scripts/tailwind.js") }}'></script>
     <link rel="shortcut icon" href="{{ url_for("static",
     filename="icons/logo.svg") }}" type="image/svg+xml" />
   </head>
