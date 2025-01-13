@@ -23,17 +23,25 @@ def admin_dashboard():
     total_products = Product.query.count()
     total_users = Users.query.count()
     total_orders = Order.query.count()
+
     total_revenue = db.session.query(
         db.func.sum(Order.total_price)).scalar() or 0
     recent_orders = Order.query.order_by(
         Order.created_at.desc()).limit(10).all()
 
-    return render_template('admin/dashboard.html',
-                           total_products=total_products,
-                           total_users=total_users,
-                           total_orders=total_orders,
-                           total_revenue="{:.2f}".format(total_revenue),
-                           recent_orders=recent_orders)
+    products = Product.query.all()
+    users = Users.query.all()
+
+    return render_template(
+        'admin/dashboard.html',
+        total_products=total_products,
+        total_users=total_users,
+        total_orders=total_orders,
+        total_revenue=total_revenue,
+        recent_orders=recent_orders,
+        products=products,
+        users=users
+    )
 
 
 @admin_blueprint.route('/products', methods=['GET'])
