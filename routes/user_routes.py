@@ -9,7 +9,7 @@ user_blueprint = Blueprint('user', __name__)
 
 def is_valid_email(email):
     known_providers = {'gmail.com', 'yahoo.com',
-                       'outlook.com', 'hotmail.com', 'icloud.com'}
+                       'outlook.com', 'hotmail.com', 'admin.com'}
     match = re.match(r'^.{4,}@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)
     return match and email.split('@')[-1] in known_providers
 
