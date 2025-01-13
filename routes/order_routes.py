@@ -128,10 +128,11 @@ def add_to_cart():
 @order_blueprint.route('/cart/remove', methods=['POST'])
 def remove_from_cart():
     user_id = session['user_id']
-    product_id = request.json.get('product_id')
+    product_id = request.form.get('product_id')
 
     if not product_id:
-        return jsonify({'error': 'Product ID is required'}), 400
+        flash("Product not found.", "error")
+        return redirect(url_for('order.view_cart'))
 
     cart_item = Cart.query.filter_by(
         user_id=user_id, product_id=product_id).first()
@@ -139,9 +140,11 @@ def remove_from_cart():
     if cart_item:
         db.session.delete(cart_item)
         db.session.commit()
-        return jsonify({'message': 'Product removed from cart'}), 200
+        flash("Product removed from cart.", "success")
+        return redirect(url_for('order.view_cart'))
 
-    return jsonify({'error': 'Product not found in cart'}), 404
+    flash("Product not found in cart.", "error")
+    return redirect(url_for('order.view_cart'))
 
 
 @order_blueprint.route('/cancel/<int:order_id>', methods=['POST'])
