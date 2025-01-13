@@ -13,7 +13,7 @@ order_blueprint = Blueprint('order', __name__, url_prefix='/order')
 @order_blueprint.before_request
 def check_user():
     if 'user_id' not in session:
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('user.login'))
 
 
 @order_blueprint.route('/my_orders', methods=['GET'])
@@ -80,22 +80,41 @@ def view_cart():
 def add_to_cart():
     user_id = session['user_id']
     product_id = request.form.get('product_id')
-    quantity = int(request.form.get('quantity', 1))
+
+    quantity = request.form.get('quantity', 1)
+
+    try:
+        quantity = int(quantity)
+        if quantity <= 0:
+            flash("Quantity must be a positive number.", "error")
+            return redirect(url_for('order.view_cart'))
+    except ValueError:
+        flash("Invalid quantity value.", "error")
+        return redirect(url_for('order.view_cart'))
 
     if not product_id:
         flash("Product ID is required.", "error")
-        return redirect(url_for('public.index'))
+        return redirect(url_for('order.view_cart'))
 
     product = Product.query.get(product_id)
-    if not product or product.quantity < quantity:
-        flash("Insufficient stock or product not found.", "error")
-        return redirect(url_for('public.index'))
+    if not product:
+        flash("Product not found.", "error")
+        return redirect(url_for('order.view_cart'))
+
+    if product.quantity < quantity:
+        flash(
+            f"Insufficient stock. Only {product.quantity} units available.", "error")
+        return redirect(url_for('order.view_cart'))
 
     cart_item = Cart.query.filter_by(
         user_id=user_id, product_id=product_id).first()
 
     if cart_item:
-        cart_item.quantity += quantity
+        if product.quantity < quantity:
+            flash(
+                f"Insufficient stock. Only {product.quantity} units available.", "error")
+            return redirect(url_for('order.view_cart'))
+        cart_item.quantity = quantity
     else:
         cart_item = Cart(
             user_id=user_id, product_id=product_id, quantity=quantity)
@@ -103,7 +122,7 @@ def add_to_cart():
 
     db.session.commit()
     flash("Product added to cart.", "success")
-    return redirect(url_for('public.index'))
+    return redirect(url_for('order.view_cart'))
 
 
 @order_blueprint.route('/cart/remove', methods=['POST'])
