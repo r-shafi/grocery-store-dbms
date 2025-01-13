@@ -159,7 +159,7 @@
           >
             <a
               href="/"
-              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0"
+              class="hover:text-purple-600 hover:underline {{ 'text-white bg-purple-600 md:bg-transparent md:text-purple-600' if request.path == url_for('public.index') }}"
             >
               Home
             </a>
@@ -167,27 +167,22 @@
             {% if is_admin %}
             <a
               href="/admin/dashboard"
-              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0"
+              class="hover:text-purple-600 hover:underline {{ 'text-white bg-purple-600 md:bg-transparent md:text-purple-600' if request.path == url_for('admin.admin_dashboard') }}"
             >
               Admin Dashboard
             </a>
             {% endif %} {% if username %}
-            <a
-              href="/"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:"
-              >My Profile</a
-            >
-            <a
-              href="/logout"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:"
-              >Logout</a
-            >
+
+            <a href="/logout" class="hover:text-purple-600 hover:underline">
+              Logout
+            </a>
             {% else %}
             <a
               href="{{ url_for('user.login') }}"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:"
-              >Login</a
+              class="hover:text-purple-600 hover:underline {{ 'text-white bg-purple-600 md:bg-transparent md:text-purple-600' if request.path == url_for('user.login') }}"
             >
+              Login
+            </a>
             {% endif %}
           </ul>
         </div>
