@@ -29,3 +29,17 @@ class Product(db.Model):
         if key == 'quantity' and value < 0:
             raise ValueError("Quantity cannot be negative")
         return value
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'image': self.image,
+            'price': self.price,
+            'quantity': self.quantity,
+            'unit': self.unit,
+            'description': self.description,
+            'category_id': self.category_id,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }

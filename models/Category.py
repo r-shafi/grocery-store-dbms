@@ -17,3 +17,11 @@ class Category(db.Model):
         if not value:
             raise ValueError("Name cannot be empty")
         return value
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }
