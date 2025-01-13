@@ -4,10 +4,12 @@ from configs.config import Config
 from routes import init_routes
 from configs.database import db
 from models.Cart import Cart
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:8081"}})
 
 
 @app.context_processor
