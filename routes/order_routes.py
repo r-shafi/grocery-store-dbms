@@ -80,7 +80,7 @@ def view_cart():
 def add_to_cart():
     user_id = session['user_id']
     product_id = request.form.get('product_id')
-
+    newly_added = request.form.get('quantity')
     quantity = request.form.get('quantity', 1)
 
     try:
@@ -121,8 +121,8 @@ def add_to_cart():
         db.session.add(cart_item)
 
     db.session.commit()
-    flash("Product added to cart.", "success")
-    return redirect(url_for('order.view_cart'))
+    flash(f"{product.name} {'added' if newly_added is None else 'updated'} in cart.", "success")
+    return redirect(url_for('public.index' if newly_added is None else 'order.view_cart'))
 
 
 @order_blueprint.route('/cart/remove', methods=['POST'])
