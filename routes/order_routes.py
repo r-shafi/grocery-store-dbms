@@ -23,7 +23,7 @@ def user_orders():
     return render_template('orders.html', orders=orders)
 
 
-@order_blueprint.route('/place_order', methods=['POST'])
+@order_blueprint.route('/place_order')
 def place_order():
     user_id = session['user_id']
     cart_items = Cart.query.filter_by(user_id=user_id).options(
@@ -69,11 +69,16 @@ def place_order():
 @order_blueprint.route('/cart', methods=['GET'])
 def view_cart():
     user_id = session['user_id']
+
     cart_items = Cart.query.filter_by(user_id=user_id).options(
         joinedload(Cart.product)).all()
+
     total_price = sum(
         item.quantity * item.product.price for item in cart_items)
-    return render_template('cart.html', cart_items=cart_items, total_price=total_price)
+
+    order_history = Order.query.filter_by(user_id=user_id).all()
+
+    return render_template('cart.html', cart_items=cart_items, total_price=total_price, order_history=order_history)
 
 
 @order_blueprint.route('/cart/add', methods=['POST'])
