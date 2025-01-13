@@ -41,7 +41,8 @@ def search():
             'index.html',
             products=products,
             categories=categories,
-            search_query=query
+            search_query=query,
+            selected_category=None
         )
     except Exception as e:
         return render_template("error.html", error=f"An error occurred: {str(e)}")
