@@ -16,13 +16,6 @@ def check_user():
         return redirect(url_for('user.login'))
 
 
-@order_blueprint.route('/my_orders', methods=['GET'])
-def user_orders():
-    orders = Order.query.filter_by(user_id=session['user_id']).order_by(
-        Order.created_at.desc()).all()
-    return render_template('orders.html', orders=orders)
-
-
 @order_blueprint.route('/place_order')
 def place_order():
     user_id = session['user_id']
@@ -63,7 +56,7 @@ def place_order():
     db.session.commit()
 
     flash("Order placed successfully!", "success")
-    return redirect(url_for('order.user_orders'))
+    return redirect(url_for('order.view_cart'))
 
 
 @order_blueprint.route('/cart', methods=['GET'])
@@ -159,11 +152,11 @@ def cancel_order(order_id):
 
     if not order:
         flash("Order not found.", "error")
-        return redirect(url_for('order.user_orders'))
+        return redirect(url_for('order.view_cart'))
 
     if order.status != 'Pending':
         flash("Only pending orders can be canceled.", "error")
-        return redirect(url_for('order.user_orders'))
+        return redirect(url_for('order.view_cart'))
 
     for item in order.order_items:
         product = Product.query.get(item.product_id)
@@ -174,7 +167,7 @@ def cancel_order(order_id):
     db.session.commit()
 
     flash("Order canceled successfully.", "success")
-    return redirect(url_for('order.user_orders'))
+    return redirect(url_for('order.view_cart'))
 
 
 @order_blueprint.route('/order_now', methods=['POST'])
@@ -208,4 +201,4 @@ def order_now():
     db.session.commit()
 
     flash("Order placed successfully!", "success")
-    return redirect(url_for('order.user_orders'))
+    return redirect(url_for('order.view_cart'))
