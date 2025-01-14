@@ -110,7 +110,7 @@
         >
           <option value="">Select Category</option>
           {% for category in categories %}
-          <option value="{{ category.id }}" selected>
+          <option value="{{ category.id }}" {% if product and product.category_id == category.id %}selected{% endif %}>
             {{ category.name }}
           </option>
           {% endfor %}
