@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash
 from datetime import datetime
 from models.Product import Product
 from models.Category import Category
-from models.Order import Order
+from models.Order import Order, OrderStatus
 from models.User import Users
 
 
@@ -143,24 +143,28 @@ def delete_category(category_id):
     return redirect(url_for('admin.manage_categories'))
 
 
-@admin_blueprint.route('/orders', methods=['GET'])
-def manage_orders():
-    orders = Order.query.order_by(Order.created_at.desc()).all()
-    return render_template('admin/orders.html', orders=orders)
-
-
 @admin_blueprint.route('/update_order/<int:order_id>', methods=['POST'])
 def update_order_status(order_id):
     status = request.form.get('status')
     order = Order.query.get_or_404(order_id)
-    if status not in ['Pending', 'Processing', 'Shipped', 'Delivered', 'Canceled']:
+
+    valid_statuses = [status.value for status in OrderStatus]
+
+    if status not in valid_statuses:
         flash("Invalid order status.", "danger")
-        return redirect(url_for('admin.manage_orders'))
+        return redirect(url_for('admin.admin_dashboard'))
+
+    restricted_statuses = ['Delivered', 'Canceled']
+
+    if order.status in restricted_statuses:
+        flash(
+            f"Cannot change the order status from '{order.status}' as it has reached a final state.", "danger")
+        return redirect(url_for('admin.admin_dashboard'))
 
     order.status = status
     db.session.commit()
     flash("Order status updated successfully.", "success")
-    return redirect(url_for('admin.manage_orders'))
+    return redirect(url_for('admin.admin_dashboard'))
 
 
 @admin_blueprint.route('/users', methods=['GET'])
