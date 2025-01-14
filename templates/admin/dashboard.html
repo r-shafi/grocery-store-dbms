@@ -1,7 +1,7 @@
 {% extends 'parent.html' %} {% block title %}
 <title>Admin Dashboard</title>
 {% endblock %} {% block body %}
-<div class="w-full flex flex-col gap-4 p-4">
+<div class="w-full flex flex-col gap-8 p-4">
   <h1 class="text-3xl font-bold text-center">Admin Dashboard</h1>
 
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -23,19 +23,21 @@
     </div>
   </div>
 
-  <div class="bg-white shadow-md rounded-lg p-4">
-    <h2 class="text-xl font-bold">Product Management</h2>
-    <div class="mb-4">
-      <a
-        href="/admin/product"
-        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        >Add New Product</a
-      >
-      <a
-        href="/admin/category"
-        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        >Manage Categories</a
-      >
+  <div class="bg-white shadow-md rounded-lg p-4 flex flex-col gap-4">
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-bold">Product Management</h2>
+      <div>
+        <a
+          href="/admin/product"
+          class="px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
+          >Add New Product</a
+        >
+        <a
+          href="/admin/category"
+          class="px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
+          >Manage Categories</a
+        >
+      </div>
     </div>
     <div class="overflow-x-auto">
       <table class="min-w-full border-collapse border border-gray-300">
@@ -88,12 +90,12 @@
     </div>
   </div>
 
-  <div class="bg-white shadow-md rounded-lg p-4 mt-4">
-    <h2 class="text-xl font-bold">User Management</h2>
-    <div class="mb-4">
+  <div class="bg-white shadow-md rounded-lg p-4 flex flex-col gap-4">
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-bold">User Management</h2>
       <a
         href="/admin/user"
-        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        class="px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
         >Add New User</a
       >
     </div>
@@ -142,12 +144,12 @@
     </div>
   </div>
 
-  <div class="bg-white shadow-md rounded-lg p-4 mt-4">
-    <h2 class="text-xl font-bold">Recent Orders</h2>
-    <div class="mb-4">
+  <div class="bg-white shadow-md rounded-lg p-4 flex flex-col gap-4">
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-bold">Recent Orders</h2>
       <a
         href="/admin/orders"
-        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        class="px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
         >View All Orders</a
       >
     </div>
