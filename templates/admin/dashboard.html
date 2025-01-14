@@ -164,31 +164,33 @@
             <th class="px-6 py-3 text-left border">Total Price</th>
             <th class="px-6 py-3 text-left border">Status</th>
             <th class="px-6 py-3 text-left border">Date</th>
-            <th class="px-6 py-3 border">Actions</th>
+            <th class="px-6 py-3 border">Status</th>
           </tr>
         </thead>
         <tbody>
           {% for order in recent_orders %}
           <tr class="border-b">
-            <td class="px-6 py-4 border">{{ order.id }}</td>
-            <td class="px-6 py-4 border">{{ order.user.name }}</td>
-            <td class="px-6 py-4 border">
-              ৳{{ "%.2f"|format(order.total_price) }}
-            </td>
-            <td class="px-6 py-4 border">{{ order.status }}</td>
-            <td class="px-6 py-4 border">
-              {{ order.created_at.strftime('%Y-%m-%d %H:%M') }}
-            </td>
-            <td class="px-6 py-4 border">
-              <a
-                href="/admin/order_details/{{ order.id }}"
-                class="text-blue-500 hover:underline"
-                >Details</a
-              >
-            </td>
+              <td class="px-6 py-4 border">{{ order.id }}</td>
+              <td class="px-6 py-4 border">{{ order.user.name }}</td>
+              <td class="px-6 py-4 border">
+                  ৳{{ "%.2f"|format(order.total_price) }}
+              </td>
+              <td class="px-6 py-4 border">{{ order.status }}</td>
+              <td class="px-6 py-4 border">
+                  {{ order.created_at.strftime('%Y-%m-%d %H:%M') }}
+              </td>
+              <td class="px-6 py-4 border">
+                  <form action="{{ url_for('admin.update_order_status', order_id=order.id) }}" method="POST">
+                      <select name="status" onchange="this.form.submit()">
+                          {% for status in ['Pending', 'Processing', 'Shipped', 'Delivered', 'Canceled'] %}
+                          <option value="{{ status }}" {% if order.status == status %}selected{% endif %}>{{ status }}</option>
+                          {% endfor %}
+                      </select>
+                  </form>
+              </td>
           </tr>
           {% endfor %}
-        </tbody>
+      </tbody>
       </table>
     </div>
   </div>
