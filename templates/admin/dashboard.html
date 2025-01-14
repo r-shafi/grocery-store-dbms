@@ -26,17 +26,19 @@
   <div class="bg-white shadow-md rounded-lg p-4 flex flex-col gap-4">
     <div class="flex justify-between items-center">
       <h2 class="text-xl font-bold">Product Management</h2>
-      <div>
+      <div class="flex gap-4">
         <a
-          href="/admin/product"
+          href="{{ url_for("admin.add_or_edit_product") }}"
           class="px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
-          >Add New Product</a
         >
+          Add Product
+        </a>
         <a
-          href="/admin/category"
+          href="{{ url_for('admin.manage_categories') }}"
           class="px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
-          >Manage Categories</a
         >
+          Add Category
+        </a>
       </div>
     </div>
     <div class="overflow-x-auto">
@@ -96,7 +98,7 @@
       <a
         href="/admin/user"
         class="px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
-        >Add New User</a
+        >Add User</a
       >
     </div>
     <div class="overflow-x-auto">
