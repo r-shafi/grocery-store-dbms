@@ -1,16 +1,16 @@
 {% extends 'parent.html' %} {% block title %}
 <title>Products Display</title>
 {% endblock title %} {% block body %}
-<div class="flex flex-col gap4">
+<div class="flex flex-col gap-4 w-full">
   <div class="flex flex-wrap gap-2 justify-center pb-8">
+    {% if categories|length > 0 %}
     <a
       class="px-3 py-1 rounded-md shadow-sm sm:py-2 sm:text-base ring ring-transparent md:px-4 hover:ring hover:ring-opacity-50 focus:ring-opacity-50 hover:ring-violet-600 {{ 'text-white bg-violet-600' if not selected_category else 'text-gray-900 bg-gray-200' }}"
       href="{{ url_for('public.index') }}"
     >
       <span class="text-sm">All Products</span>
     </a>
-
-    {% for category in categories %}
+    {% endif %} {% for category in categories %}
     <a
       class="px-3 py-1 rounded-md shadow-sm sm:py-2 sm:text-base ring ring-transparent group md:px-4 hover:ring hover:ring-opacity-50 focus:ring-opacity-50 hover:ring-violet-600 {{ 'text-white bg-violet-600' if selected_category.id == category.id else 'text-gray-900 bg-gray-200' }}"
       href="{{ url_for('public.products_by_category', category_id=category.id) }}"
@@ -20,10 +20,11 @@
     {% endfor %}
   </div>
 
+  {% if products %}
   <div
     class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center"
   >
-    {% if products %} {% for product in products %}
+    {% for product in products %}
     <div
       class="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
     >
@@ -100,10 +101,13 @@
         </form>
       </div>
     </div>
-    {% endfor %} {% else %}
-    <div role="alert">No products available in this category.</div>
-    {% endif %}
+    {% endfor %}
   </div>
+  {% else %}
+  <p class="max-w-sm mx-auto text-center text-2xl p-4 rounded-lg shadow-lg">
+    No Products Available!
+  </p>
+  {% endif %}
 </div>
 
 {% if error %}
