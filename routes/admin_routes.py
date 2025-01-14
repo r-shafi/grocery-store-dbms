@@ -47,12 +47,6 @@ def admin_dashboard():
     )
 
 
-@admin_blueprint.route('/products', methods=['GET'])
-def manage_products():
-    products = Product.query.all()
-    return render_template('admin/products.html', products=products)
-
-
 @admin_blueprint.route('/product', methods=['GET', 'POST'])
 @admin_blueprint.route('/product/<int:product_id>', methods=['GET', 'POST'])
 def add_or_edit_product(product_id=None):
@@ -105,7 +99,7 @@ def add_or_edit_product(product_id=None):
         try:
             db.session.commit()
             flash(message, "success")
-            return redirect(url_for('admin.manage_products'))
+            return redirect(url_for('admin.admin_dashboard'))
         except Exception as e:
             db.session.rollback()
             flash(f"An error occurred: {str(e)}", "danger")
@@ -119,7 +113,7 @@ def delete_product(product_id):
     db.session.delete(product)
     db.session.commit()
     flash("Product deleted successfully.", "success")
-    return redirect(url_for('admin.manage_products'))
+    return redirect(url_for('admin.admin_dashboard'))
 
 
 @admin_blueprint.route('/categories', methods=['GET', 'POST'])
@@ -134,6 +128,7 @@ def manage_categories():
         db.session.add(category)
         db.session.commit()
         flash("Category added successfully.", "success")
+        return redirect(url_for('admin.admin_dashboard'))
 
     categories = Category.query.all()
     return render_template('admin/category.html', categories=categories)
