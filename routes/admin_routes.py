@@ -1,3 +1,6 @@
+import os
+from werkzeug.utils import secure_filename
+from flask import flash, redirect, request, render_template, url_for
 from flask import Blueprint, session, redirect, url_for, render_template, request, flash
 from configs.database import db
 from werkzeug.security import generate_password_hash
@@ -54,18 +57,20 @@ def manage_products():
 @admin_blueprint.route('/product/<int:product_id>', methods=['GET', 'POST'])
 def add_or_edit_product(product_id=None):
     categories = Category.query.all()
-    product = Product.query.get(product_id) if product_id else None
+    product = Product.query.get_or_404(product_id) if product_id else None
 
     if request.method == 'POST':
-        name = request.form.get('name')
-        price = request.form.get('price')
-        quantity = request.form.get('quantity')
-        description = request.form.get('description')
+        name = request.form.get('name').strip()
+        price = request.form.get('price').strip()
+        quantity = request.form.get('quantity').strip()
+        unit = request.form.get('unit').strip()
+        description = request.form.get('description').strip()
         category_id = request.form.get('category')
         image = request.form.get('image')
 
-        if not all([name, price, quantity]):
-            flash("All fields (Name, Price, Quantity) are required.", "danger")
+        if not all([name, price, quantity, unit, category_id]):
+            flash(
+                "All fields (Name, Price, Quantity, Unit, and Category) are required.", "danger")
             return redirect(request.url)
 
         try:
@@ -75,25 +80,35 @@ def add_or_edit_product(product_id=None):
             flash("Price must be a number and Quantity must be an integer.", "danger")
             return redirect(request.url)
 
+        category = Category.query.get(category_id)
+        if not category:
+            flash("Invalid category selected.", "danger")
+            return redirect(request.url)
+
         if product:
             product.name = name
             product.price = price
             product.quantity = quantity
+            product.unit = unit
             product.description = description
             product.category_id = category_id
             product.image = image
             message = "Product updated successfully!"
         else:
             product = Product(
-                name=name, price=price, quantity=quantity,
+                name=name, price=price, quantity=quantity, unit=unit,
                 description=description, category_id=category_id, image=image
             )
             db.session.add(product)
             message = "Product added successfully!"
 
-        db.session.commit()
-        flash(message, "success")
-        return redirect(url_for('admin.manage_products'))
+        try:
+            db.session.commit()
+            flash(message, "success")
+            return redirect(url_for('admin.manage_products'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An error occurred: {str(e)}", "danger")
 
     return render_template('admin/product.html', categories=categories, product=product)
 
