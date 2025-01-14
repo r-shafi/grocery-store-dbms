@@ -136,7 +136,7 @@ def manage_categories():
         flash("Category added successfully.", "success")
 
     categories = Category.query.all()
-    return render_template('admin/categories.html', categories=categories)
+    return render_template('admin/category.html', categories=categories)
 
 
 @admin_blueprint.route('/delete_category/<int:category_id>', methods=['POST'])
