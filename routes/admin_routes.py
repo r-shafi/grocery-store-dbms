@@ -21,19 +21,38 @@ def check_admin():
         return redirect(url_for('auth.login'))
 
 
-@admin_blueprint.route('/dashboard')
+@admin_blueprint.route('/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
     total_products = Product.query.count()
     total_users = Users.query.count()
     total_orders = Order.query.count()
 
     total_revenue = db.session.query(
-        db.func.sum(Order.total_price)).scalar() or 0
+        db.func.sum(Order.total_price)
+    ).filter(Order.status.in_(["shipped", "delivered"])).scalar() or 0
+
     recent_orders = Order.query.order_by(
         Order.created_at.desc()).limit(10).all()
 
     products = Product.query.all()
     users = Users.query.all()
+
+    if request.method == 'POST':
+        table = request.form.get('table')
+        query = request.form.get('query')
+
+        if table == 'Product':
+            products = Product.query.filter(
+                (Product.id == query) | (Product.name.ilike(f'%{query}%'))
+            ).all()
+        elif table == 'Users':
+            users = Users.query.filter(
+                (Users.id == query) | (Users.name.ilike(f'%{query}%'))
+            ).all()
+        else:
+            orders = Order.query.filter((Order.id == query) | (Order.user_id.in_(
+                db.session.query(Users.id).filter(Users.name.ilike(f'%{query}%')).subquery()))) .all()
+            recent_orders = orders
 
     return render_template(
         'admin/dashboard.html',
