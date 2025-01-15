@@ -31,8 +31,9 @@ def admin_dashboard():
     recent_orders = Order.query.order_by(
         Order.created_at.desc()).limit(10).all()
 
-    products = Product.query.all()
-    users = Users.query.all()
+    products = Product.query.order_by(
+        Product.created_at.desc()).limit(10).all()
+    users = Users.query.order_by(Users.created_at.desc()).limit(10).all()
 
     if request.method == 'POST':
         table = request.form.get('table')
