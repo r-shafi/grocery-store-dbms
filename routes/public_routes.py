@@ -1,6 +1,9 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
 from models.Category import Category
 from models.Product import Product
+from models.Contact import Contact
+from .user_routes import is_valid_email
+from configs.database import db
 
 public_blueprint = Blueprint('public', __name__)
 
@@ -55,6 +58,34 @@ def product_details(product_id):
         return render_template('product_details.html', product=product)
     except Exception as e:
         return render_template("error.html", error=f"An error occurred: {str(e)}")
+
+
+@public_blueprint.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        subject = request.form.get('subject', '').strip()
+        message = request.form.get('message', '').strip()
+
+        if not name or not email or not subject or not message:
+            flash('All fields are required.', 'error')
+            return render_template('contact.html', name=name, email=email, subject=subject, message=message)
+
+        if not is_valid_email(email):
+            flash('Please use a valid email address.', 'error')
+            return render_template('contact.html', name=name, email=email, subject=subject, message=message)
+
+        contact = Contact(name=name, email=email,
+                          subject=subject, message=message)
+        db.session.add(contact)
+        db.session.commit()
+
+        flash('Thank you for contacting us! We will get back to you soon.', 'success')
+
+        return redirect(url_for('public.contact'))
+
+    return render_template('contact.html')
 
 
 @public_blueprint.route('/api/categories', methods=['GET'])
