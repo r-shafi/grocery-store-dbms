@@ -1,15 +1,12 @@
-import os
-from werkzeug.utils import secure_filename
 from flask import flash, redirect, request, render_template, url_for
 from flask import Blueprint, session, redirect, url_for, render_template, request, flash
 from configs.database import db
 from werkzeug.security import generate_password_hash
-from datetime import datetime
 from models.Product import Product
 from models.Category import Category
 from models.Order import Order, OrderStatus
 from models.User import Users
-
+import re
 
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -135,17 +132,27 @@ def delete_product(product_id):
     return redirect(url_for('admin.admin_dashboard'))
 
 
+IMAGE_URL_REGEX = r'^(https?://(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(/[\w.-]+)*(?:\.(?:jpg|jpeg|png|gif|bmp|webp))$'
+
+
 @admin_blueprint.route('/categories', methods=['GET', 'POST'])
 def manage_categories():
     if request.method == 'POST':
         name = request.form.get('name')
+        image = request.form.get('image')
+
         if not name or len(name) < 3:
             flash("Category name must be at least 3 characters long.", "danger")
             return redirect(url_for('admin.manage_categories'))
 
-        category = Category(name=name)
+        if not image or not re.match(IMAGE_URL_REGEX, image):
+            flash("Please provide a valid image URL (e.g., .jpg, .png, .gif).", "danger")
+            return redirect(url_for('admin.manage_categories'))
+
+        category = Category(name=name, image=image)
         db.session.add(category)
         db.session.commit()
+
         flash("Category added successfully.", "success")
         return redirect(url_for('admin.admin_dashboard'))
 
