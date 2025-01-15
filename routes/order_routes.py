@@ -13,6 +13,7 @@ order_blueprint = Blueprint('order', __name__, url_prefix='/order')
 @order_blueprint.before_request
 def check_user():
     if 'user_id' not in session:
+        flash("You Must Be Logged In To Perform This Action.", "error")
         return redirect(url_for('user.login'))
 
 
