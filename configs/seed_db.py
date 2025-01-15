@@ -1,12 +1,6 @@
-from werkzeug.security import generate_password_hash
-from datetime import datetime
 from configs.database import db
-from models.Cart import Cart
 from models.Category import Category
-from models.Order import Order, OrderStatus
-from models.OrderItem import OrderItem
 from models.Product import Product
-from models.User import Users
 
 
 def seed_demo_data():
@@ -15,9 +9,12 @@ def seed_demo_data():
         "Fish", "Snacks", "Spices", "Beverages", "Desserts"
     ]
 
+    pixel_size = 200
     for cat in categories:
         if not Category.query.filter_by(name=cat).first():
-            db.session.add(Category(name=cat))
+            image_url = f'https://picsum.photos/{pixel_size}'
+            db.session.add(Category(name=cat, image=image_url))
+            pixel_size += 1
 
     db.session.commit()
     category_map = {cat.name: cat.id for cat in Category.query.all()}
@@ -77,48 +74,5 @@ def seed_demo_data():
             ))
 
     db.session.commit()
-
-    users = [
-        {"name": "John Doe", "email": "john@gmail.com",
-            "password": "password1", "is_admin": False},
-        {"name": "Jane Doe", "email": "jane@gmail.com",
-            "password": "password2", "is_admin": False},
-        {"name": "Md Karim", "email": "karim@yahoo.com",
-            "password": "password3", "is_admin": False},
-        {"name": "Md Rahim", "email": "rahim@outlook.com",
-            "password": "password4", "is_admin": False}
-    ]
-
-    for user in users:
-        if not Users.query.filter_by(email=user["email"]).first():
-            hashed_password = generate_password_hash(user["password"])
-            db.session.add(Users(
-                name=user["name"],
-                email=user["email"],
-                password=hashed_password,
-                is_admin=user["is_admin"]
-            ))
-
-    db.session.commit()
-
-    for i in range(10):
-        user = Users.query.filter_by(
-            is_admin=False).order_by(db.func.random()).first()
-        products_in_order = Product.query.order_by(
-            db.func.random()).limit(3).all()
-
-        total_price = sum(prod.price for prod in products_in_order)
-
-        order = Order(user_id=user.id, total_price=total_price,
-                      status=OrderStatus.PENDING)
-        db.session.add(order)
-        db.session.commit()
-
-        for prod in products_in_order:
-            order_item = OrderItem(
-                order_id=order.id, product_id=prod.id, quantity=1, price=prod.price)
-            db.session.add(order_item)
-
-        db.session.commit()
 
     print("Demo data seeded successfully!")

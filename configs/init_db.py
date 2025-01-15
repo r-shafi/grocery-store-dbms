@@ -1,7 +1,6 @@
 from werkzeug.security import generate_password_hash
 from configs.database import db
 from .seed_db import seed_demo_data
-from models.Category import Category
 from models.User import Users
 
 
@@ -15,13 +14,6 @@ def init_db():
         admin = Users(name='Admin User', email='admin@admin.com',
                       password=hashed_password, is_admin=True)
         db.session.add(admin)
-
-    categories = ['Fruits', 'Vegetables', 'Dairy', 'Bakery',
-                  'Meat', 'Fish', 'Snacks', 'Spices', 'Beverages', 'Desserts']
-
-    for cat_name in categories:
-        if not Category.query.filter_by(name=cat_name).first():
-            db.session.add(Category(name=cat_name))
 
     db.session.commit()
 
