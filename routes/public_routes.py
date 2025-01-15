@@ -11,16 +11,20 @@ public_blueprint = Blueprint('public', __name__)
 @public_blueprint.route("/")
 def index():
     try:
-        categories = Category.query.all()
-        products = Product.query.all()
-        return render_template("index.html", products=products, categories=categories, selected_category=None)
+        categories = Category.query.order_by(
+            Category.created_at.desc()).limit(10).all()
+
+        products = Product.query.order_by(
+            Product.created_at.desc()).limit(20).all()
+
+        return render_template("index.html", products=products, categories=categories)
     except Exception as e:
         return render_template("error.html", error=f"An error occurred: {str(e)}")
 
 
 @public_blueprint.route('/categories')
 @public_blueprint.route('/categories/<int:category_id>')
-def products_by_category(category_id=None):
+def categories(category_id=None):
     try:
         if category_id:
             category = Category.query.get_or_404(category_id)
