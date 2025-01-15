@@ -1,7 +1,7 @@
 {% extends 'parent.html' %} {% block title %}
 <title>Home | Grocery Store</title>
 {% endblock title %} {% block body %}
-<div class="flex flex-col gap-4 w-full">
+<div class="flex flex-col gap-16 w-full">
   {% if categories %}
   <div class="flex flex-col gap-8">
     <div class="flex justify-between items-center">
@@ -48,58 +48,69 @@
   {% endif %}
   <!--  -->
   {% if products %}
-  <h2 class="text-2xl font-bold">Popular Products</h2>
-  <div
-    class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center"
-  >
-    {% for product in products %}
-    <div
-      class="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
-    >
+  <div class="flex flex-col gap-8">
+    <div class="flex justify-between items-center">
+      <h2 class="text-2xl font-bold">Popular Products</h2>
       <a
-        class="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl"
-        href="{{ url_for('public.product_details', product_id=product.id) }}"
+        href="{{ url_for('public.categories') }}"
+        class="px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm"
       >
-        <img
-          class="object-cover w-full h-60"
-          src="{{ product.image }}"
-          alt="product image"
-          loading="lazy"
-        />
+        View All Products
       </a>
-      <div class="mt-4 p-4 flex flex-col justify-between h-1/2">
+    </div>
+    <div
+      class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center"
+    >
+      {% for product in products %}
+      <div
+        class="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
+      >
         <a
+          class="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl"
           href="{{ url_for('public.product_details', product_id=product.id) }}"
-          class="text-xl tracking-tight text-slate-900 flex-1"
         >
-          {{ product.name }}
+          <img
+            class="object-cover w-full h-60"
+            src="{{ product.image }}"
+            alt="product image"
+            loading="lazy"
+          />
         </a>
-        <div>
-          <div class="mt-2 mb-5 flex items-center justify-between">
-            <p>
-              <span class="text-3xl font-bold text-slate-900"
-                >৳{{ product.price }}</span
-              >
-            </p>
-          </div>
-          <form
-            action="{{ url_for('order.add_to_cart') }}"
-            method="post"
-            class="flex"
+        <div class="mt-4 p-4 flex flex-col justify-between h-1/2">
+          <a
+            href="{{ url_for('public.product_details', product_id=product.id) }}"
+            class="text-xl tracking-tight text-slate-900 flex-1"
           >
-            <input type="hidden" name="product_id" value="{{ product.id }}" />
-            <button
-              type="submit"
-              class="flex-1 rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center justify-center gap-2"
+            {{ product.name }}
+          </a>
+          <div>
+            <div class="mt-2 mb-5 flex items-center justify-between">
+              <p>
+                <span class="text-3xl font-bold text-slate-900"
+                  >৳{{ product.price }}</span
+                >
+              </p>
+            </div>
+            <form
+              action="{{ url_for('order.add_to_cart') }}"
+              method="post"
+              class="flex"
             >
-              󰄐 Add to cart
-            </button>
-          </form>
+              <input type="hidden" name="product_id" value="{{ product.id }}" />
+              <button
+                type="submit"
+                class="flex-1 rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center justify-center gap-2"
+              >
+                󰄐 Add to cart
+              </button>
+            </form>
+          </div>
         </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
+
   {% else %}
   <div class="w-full flex justify-center items-center px-4 py-8">
     <div class="p-8 flex flex-col gap-4 w-96 shadow-xl rounded-lg bg-white">
