@@ -29,21 +29,7 @@
             type="button"
             class="md:hidden text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm p-2.5 me-1"
           >
-            <svg
-              class="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-              />
-            </svg>
+            Search
           </button>
           <form
             class="relative hidden md:block"
@@ -78,26 +64,21 @@
             />
           </form>
 
+          {% if username %}
           <a
             href="{{ url_for('order.view_cart') }}"
-            class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-500 focus:ring-4 focus:ring-purple-300 ml-4"
+            class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-purple-600 bg-white rounded-md focus:ring-4 focus:ring-purple-300 ml-4 border border-purple-600"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            {{ cart_count }}
+            <img src="{{ url_for("static", filename="icons/logo.svg") }}" /> {{
+            cart_count }}
           </a>
+          {% endif %}
+
+          <a
+            href="{{ '/logout' if username else url_for('user.login')}}"
+            class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-500 focus:ring-4 focus:ring-purple-300 ml-4"
+            >{{ 'Logout' if username else 'Login' }}</a
+          >
 
           <button
             data-collapse-toggle="navbar-search"
@@ -127,25 +108,11 @@
           class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
         >
           <div class="relative mt-3 md:hidden">
-            <div
+            <p
               class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
             >
-              <svg
-                class="w-4 h-4 text-gray-500"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
+              
+            </p>
             <input
               type="text"
               class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
@@ -161,6 +128,18 @@
             >
               Home
             </a>
+            <a
+              href="/"
+              class="hover:text-purple-600 hover:underline {{ 'text-white bg-purple-600 md:bg-transparent md:text-purple-600' if request.path == '/categories' }}"
+            >
+              Categories
+            </a>
+            <a
+              href="{{ url_for('public.contact') }}"
+              class="hover:text-purple-600 hover:underline {{ 'text-white bg-purple-600 md:bg-transparent md:text-purple-600' if request.path == url_for('public.contact') }}"
+            >
+              Contact
+            </a>
 
             {% if is_admin %}
             <a
@@ -168,18 +147,6 @@
               class="hover:text-purple-600 hover:underline {{ 'text-white bg-purple-600 md:bg-transparent md:text-purple-600' if request.path == url_for('admin.admin_dashboard') }}"
             >
               Admin Dashboard
-            </a>
-            {% endif %} {% if username %}
-
-            <a href="/logout" class="hover:text-purple-600 hover:underline">
-              Logout
-            </a>
-            {% else %}
-            <a
-              href="{{ url_for('user.login') }}"
-              class="hover:text-purple-600 hover:underline {{ 'text-white bg-purple-600 md:bg-transparent md:text-purple-600' if request.path == url_for('user.login') }}"
-            >
-              Login
             </a>
             {% endif %}
           </ul>
