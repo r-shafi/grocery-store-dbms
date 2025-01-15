@@ -187,13 +187,14 @@
       </div>
     </nav>
 
-    {% with messages = get_flashed_messages() %} {% if messages %} {% for
-    message in messages %}
-    <p
-      class="absolute z-10 top-4 right-4 p-4 rounded-lg bg-white border-2 border-purple-600 text-purple-600 max-w-sm flash-message"
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div
+      class="max-w-sm absolute z-10 top-4 right-4 p-4 flex justify-between items-center gap-4 rounded-lg border-2 flash-message {{ ' bg-green-50 text-green-500 border-green-500' if category == 'success' else ' bg-red-50 text-red-500 border-red-500' }}"
     >
-      {{ message }}
-    </p>
+      <p>{{ message }}</p>
+      <button class="close-btn">&#x2715;</button>
+    </div>
     {% endfor %} {% endif %} {% endwith %}
 
     <main class="w-full flex-1 flex py-8 md:py-12">
@@ -224,6 +225,14 @@
           setTimeout(function () {
             message.style.display = 'none';
           }, 5000);
+
+          const closeButton = message.querySelector('.close-btn');
+
+          if (closeButton) {
+            closeButton.addEventListener('click', function () {
+              message.style.display = 'none';
+            });
+          }
         });
       });
     </script>
