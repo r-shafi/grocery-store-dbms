@@ -18,18 +18,27 @@ def index():
         return render_template("error.html", error=f"An error occurred: {str(e)}")
 
 
-@public_blueprint.route('/products/category/<int:category_id>')
-def products_by_category(category_id):
+@public_blueprint.route('/categories')
+@public_blueprint.route('/categories/<int:category_id>')
+def products_by_category(category_id=None):
     try:
-        category = Category.query.get_or_404(category_id)
-        products = Product.query.filter_by(category_id=category_id).all()
+        if category_id:
+            category = Category.query.get_or_404(category_id)
+            products = Product.query.filter_by(category_id=category_id).all()
+            selected_category = category
+        else:
+            products = Product.query.all()
+            selected_category = None
+
         categories = Category.query.all()
+
         return render_template(
-            'index.html',
+            'categories.html',
             products=products,
             categories=categories,
-            selected_category=category
+            selected_category=selected_category
         )
+
     except Exception as e:
         return render_template("error.html", error=f"An error occurred: {str(e)}")
 
