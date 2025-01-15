@@ -47,18 +47,23 @@ def categories(category_id=None):
         return render_template("error.html", error=f"An error occurred: {str(e)}")
 
 
-@public_blueprint.route('/search', methods=['GET'])
+@public_blueprint.route('/search')
 def search():
     try:
+        query = ''
+        products = []
+
         query = request.args.get('query', '').strip()
-        products = Product.query.filter(Product.name.ilike(f'%{query}%')).all()
-        categories = Category.query.all()
+        if query:
+            products = Product.query.filter(
+                Product.name.ilike(f'%{query}%')).all()
+        else:
+            products = Product.query.all()
+
         return render_template(
-            'index.html',
+            'search.html',
             products=products,
-            categories=categories,
             search_query=query,
-            selected_category=None
         )
     except Exception as e:
         return render_template("error.html", error=f"An error occurred: {str(e)}")
