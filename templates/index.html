@@ -2,24 +2,35 @@
 <title>Products Display</title>
 {% endblock title %} {% block body %}
 <div class="flex flex-col gap-4 w-full">
-  <div class="flex flex-wrap gap-2 justify-center pb-8">
-    {% if categories|length > 0 %}
-    <a
-      class="px-3 py-1 rounded-md shadow-sm sm:py-2 sm:text-base ring ring-transparent md:px-4 hover:ring hover:ring-opacity-50 focus:ring-opacity-50 hover:ring-violet-600 {{ 'text-white bg-violet-600' if not selected_category else 'text-gray-900 bg-gray-200' }}"
-      href="{{ url_for('public.index') }}"
-    >
-      <span class="text-sm">All Products</span>
-    </a>
-    {% endif %} {% for category in categories %}
-    <a
-      class="px-3 py-1 rounded-md shadow-sm sm:py-2 sm:text-base ring ring-transparent group md:px-4 hover:ring hover:ring-opacity-50 focus:ring-opacity-50 hover:ring-violet-600 {{ 'text-white bg-violet-600' if selected_category.id == category.id else 'text-gray-900 bg-gray-200' }}"
-      href="{{ url_for('public.products_by_category', category_id=category.id) }}"
-    >
-      <span class="text-sm">{{ category.name }}</span>
-    </a>
-    {% endfor %}
+  {% if categories %}
+  <div class="flex flex-col gap-4">
+    <h2 class="text-2xl font-bold">Popular Categories</h2>
+    <div class="flex gap-4 overflow-auto">
+      {% for category in categories %}
+      <a
+        href="/categories/{{ category.id }}"
+        class="w-72 h-48 overflow-hidden rounded-lg relative flex-shrink-0"
+      >
+        <img
+          class="w-72 h-48 object-cover"
+          src="{{ category.image }}"
+          alt="{{ category.name }}"
+        />
+        <p
+          class="absolute inset-0 w-full h-full text-center text-white text-lg font-bold bg-black bg-opacity-0 hover:bg-opacity-50 opacity-0 hover:opacity-100 transition-all flex justify-center items-center"
+        >
+          {{ category.name }}
+        </p>
+      </a>
+      {% endfor %}
+    </div>
   </div>
 
+  <!--  -->
+  {% else %}
+  <!-- if admin add categories message -->
+  {% endif %}
+  <!--  -->
   {% if products %}
   <div
     class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center"
@@ -106,7 +117,7 @@
   </div>
   {% else %}
   <p class="max-w-sm mx-auto text-center text-2xl p-4 rounded-lg shadow-lg">
-    No Products Available!
+    No Products Available! if admin add products message.
   </p>
   {% endif %}
 </div>
