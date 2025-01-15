@@ -4,14 +4,22 @@
 
 <div class="flex flex-col gap-4 w-full">
   <form
-    class="relative hidden md:block"
+    class="relative flex items-center gap-4"
     action="{{ url_for('public.search') }}"
     method="GET"
   >
+    <input
+      type="text"
+      class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+      placeholder="Search..."
+      required
+      name="query"
+    />
     <button
+      class="px-5 py-2.5 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm flex justify-center items-center gap-4"
       type="submit"
-      class="absolute inset-y-0 start-0 flex items-center ps-3 cursor-pointer"
     >
+      Search
       <svg
         class="w-4 h-4 text-gray-500"
         xmlns="http://www.w3.org/2000/svg"
@@ -27,13 +35,6 @@
         />
       </svg>
     </button>
-    <input
-      type="text"
-      class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-      placeholder="Search..."
-      required
-      name="query"
-    />
   </form>
 
   {% if products %}
@@ -65,9 +66,9 @@
         <div>
           <div class="mt-2 mb-5 flex items-center justify-between">
             <p>
-              <span class="text-3xl font-bold text-slate-900"
-                >৳{{ product.price }}</span
-              >
+              <span class="text-3xl font-bold text-slate-900">
+                ৳{{ product.price }}
+              </span>
             </p>
           </div>
           <form
@@ -80,7 +81,21 @@
               type="submit"
               class="flex-1 rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center justify-center gap-2"
             >
-              󰄐 Add to cart
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="mr-2 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                ></path>
+              </svg>
+              Add to Cart
             </button>
           </form>
         </div>
@@ -96,9 +111,12 @@
         We couldn't find what you are looking for!
       </p>
       <div class="flex justify-end">
-        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+        <a
+          href="{{ url_for('public.categories') }}"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg"
+        >
           View All Products
-        </button>
+        </a>
       </div>
     </div>
   </div>
