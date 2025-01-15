@@ -180,6 +180,7 @@
             <th class="px-6 py-3 text-left border">Name</th>
             <th class="px-6 py-3 text-left border">Email</th>
             <th class="px-6 py-3 text-left border">Role</th>
+            <th class="px-6 py-3 text-left border">Registered On</th>
             <th class="px-6 py-3 border">Actions</th>
           </tr>
         </thead>
@@ -190,6 +191,9 @@
             <td class="px-6 py-4 border">{{ user.email }}</td>
             <td class="px-6 py-4 border">
               {{ 'Admin' if user.is_admin else 'User' }}
+            </td>
+            <td class="px-6 py-4 border">
+              {{ user.created_at.strftime('%I:%M:%S %p - %d %b %Y') }}
             </td>
             <td class="px-6 py-4 border">
               <div role="group" class="flex space-x-2">
