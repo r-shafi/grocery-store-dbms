@@ -26,7 +26,11 @@ def admin_dashboard():
 
     total_revenue = db.session.query(
         db.func.sum(Order.total_price)
-    ).filter(Order.status.in_(["shipped", "delivered"])).scalar() or 0
+    ).filter(
+        Order.status.in_(["Shipped", "Delivered"])
+    ).scalar()
+
+    total_revenue = total_revenue or 0
 
     recent_orders = Order.query.order_by(
         Order.created_at.desc()).limit(10).all()
