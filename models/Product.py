@@ -20,16 +20,6 @@ class Product(db.Model):
     orders = db.relationship('OrderItem', backref='product', lazy=True)
     cart_items = db.relationship('Cart', backref='product', lazy=True)
 
-    @validates('name', 'price', 'quantity')
-    def validate_product_fields(self, key, value):
-        if key == 'name' and not value:
-            raise ValueError("Name cannot be empty")
-        if key == 'price' and value <= 0:
-            raise ValueError("Price must be greater than 0")
-        if key == 'quantity' and value < 0:
-            raise ValueError("Quantity cannot be negative")
-        return value
-
     def to_dict(self):
         return {
             'id': self.id,
