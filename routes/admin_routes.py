@@ -149,6 +149,11 @@ def manage_categories():
             flash("Please provide a valid image URL (e.g., .jpg, .png, .gif).", "danger")
             return redirect(url_for('admin.manage_categories'))
 
+        existing_category = Category.query.filter_by(name=name).first()
+        if existing_category:
+            flash("A category with the same name already exists.", "danger")
+            return redirect(url_for('admin.manage_categories'))
+
         category = Category(name=name, image=image)
         db.session.add(category)
         db.session.commit()
