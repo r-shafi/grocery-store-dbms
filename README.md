@@ -11,7 +11,7 @@ This is a comprehensive Grocery Store Application built using Python, Flask, SQL
 ### Admin Features
 
 - Product Management: Add, edit, and delete products from the database.
-- Category Management: Create, edit, and delete product categories.
+- Category Management: Create product categories.
 - User Management: Add, edit, and delete users with different roles (e.g., admin, staff, customer).
 - Contacts Management: Manage customer contacts and store information.
 - Orders Management: View, update, and cancel orders.
