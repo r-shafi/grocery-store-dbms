@@ -4,23 +4,39 @@
 <div class="w-full flex flex-col gap-8 p-4">
   <h1 class="text-3xl font-bold text-center">Admin Dashboard</h1>
 
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+    <a
+      href="{{ url_for('admin.manage_products') }}"
+      class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center"
+    >
       <h5 class="text-lg font-semibold">Total Products</h5>
       <h3 class="text-2xl">{{ total_products }}</h3>
-    </div>
-    <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
+    </a>
+    <a
+      href="{{ url_for('admin.manage_users') }}"
+      class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center"
+    >
       <h5 class="text-lg font-semibold">Registered Users</h5>
       <h3 class="text-2xl">{{ total_users }}</h3>
-    </div>
-    <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
+    </a>
+    <a
+      href="{{ url_for('admin.manage_orders') }}"
+      class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center"
+    >
       <h5 class="text-lg font-semibold">Total Orders</h5>
       <h3 class="text-2xl">{{ total_orders }}</h3>
-    </div>
-    <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
+    </a>
+    <a class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
       <h5 class="text-lg font-semibold">Total Revenue</h5>
       <h3 class="text-2xl">৳{{ "%.2f"|format(total_revenue) }}</h3>
-    </div>
+    </a>
+    <a
+      href="{{ url_for('admin.manage_contacts') }}"
+      class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center"
+    >
+      <h5 class="text-lg font-semibold">Unread Messages</h5>
+      <h3 class="text-2xl">{{ unread_contacts_count }}</h3>
+    </a>
   </div>
 
   <div class="bg-white shadow-md rounded-lg p-4 flex flex-col gap-4">
