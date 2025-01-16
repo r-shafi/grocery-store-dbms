@@ -116,9 +116,10 @@
     <table class="w-full">
       <thead>
         <tr class="border-b">
-          <th class="px-6 py-3 text-left">Order ID</th>
+          <th class="px-6 py-3 text-left">ID</th>
           <th class="px-6 py-3 text-left">Date</th>
           <th class="px-6 py-3 text-left">Status</th>
+          <th class="px-6 py-3 text-left">Products</th>
           <th class="px-6 py-3 text-left">Total Price</th>
           <th class="px-6 py-3">Action</th>
         </tr>
@@ -126,13 +127,26 @@
       <tbody>
         {% for order in order_history %}
         <tr class="border-b">
-          <td class="px-6 py-4">{{ order.id }}</td>
-          <td class="px-6 py-4">
+          <td class="px-6 py-4" rowspan="{{ order.order_items|length }}">
+            {{ order.id }}
+          </td>
+          <td class="px-6 py-4" rowspan="{{ order.order_items|length }}">
             {{ order.created_at.strftime('%I:%M:%S %p - %d %b %Y') }}
           </td>
-          <td class="px-6 py-4">{{ order.status }}</td>
-          <td class="px-6 py-4">৳{{ order.total_price }}</td>
+          <td class="px-6 py-4" rowspan="{{ order.order_items|length }}">
+            {{ order.status }}
+          </td>
+
           <td class="px-6 py-4">
+            {% for item in order.order_items %} {{ item.product_name }} ({{
+            item.quantity }}){% if not loop.last %}, {% endif %} {% endfor %}
+          </td>
+
+          <td class="px-6 py-4" rowspan="{{ order.order_items|length }}">
+            ৳{{ order.total_price }}
+          </td>
+
+          <td class="px-6 py-4" rowspan="{{ order.order_items|length }}">
             {% if order.status == 'Pending' %}
             <form
               action="{{ url_for('order.cancel_order', order_id=order.id) }}"
@@ -149,7 +163,9 @@
             {% endif %}
           </td>
         </tr>
-        {% endfor %}
+        {% for item in order.order_items %} {% if not loop.first %}
+        <tr class="border-b"></tr>
+        {% endif %} {% endfor %} {% endfor %}
       </tbody>
     </table>
   </div>
