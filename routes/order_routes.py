@@ -62,17 +62,48 @@ def place_order():
 
 @order_blueprint.route('/cart', methods=['GET'])
 def view_cart():
-    user_id = session['user_id']
+    user_id = session.get('user_id')
 
-    cart_items = Cart.query.filter_by(user_id=user_id).options(
-        joinedload(Cart.product)).all()
+    try:
+        cart_items = Cart.query.filter_by(user_id=user_id).options(
+            joinedload(Cart.product)).all()
+        orders = Order.query.filter_by(user_id=user_id).all()
+    except Exception as e:
+        return render_template("error.html", error=f"An error occurred: {str(e)}")
 
     total_price = sum(
-        item.quantity * item.product.price for item in cart_items)
+        item.quantity * item.product.price for item in cart_items if item.product)
 
-    order_history = Order.query.filter_by(user_id=user_id).all()
+    order_history = []
+    for order in orders:
+        order_data = {
+            "id": order.id,
+            "status": order.status,
+            "total_price": round(order.total_price, 2),
+            "created_at": order.created_at,
+            "order_items": []
+        }
 
-    return render_template('cart.html', cart_items=cart_items, total_price=total_price, order_history=order_history)
+        for item in order.order_items:
+            product = item.product
+            if product is not None:
+                order_item_data = {
+                    "product_id": product.id,
+                    "product_name": product.name,
+                    "product_image": product.image,
+                    "product_unit": product.unit,
+                    "quantity": item.quantity,
+                    "price_per_unit": round(product.price, 2),
+                    "total_price": round(item.price, 2)
+                }
+                order_data["order_items"].append(order_item_data)
+
+        order_history.append(order_data)
+
+    try:
+        return render_template('cart.html', cart_items=cart_items, total_price=total_price, order_history=order_history)
+    except Exception as e:
+        return render_template("error.html", error=f"An error occurred: {str(e)}")
 
 
 @order_blueprint.route('/cart/add', methods=['POST'])
