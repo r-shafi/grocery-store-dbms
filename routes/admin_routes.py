@@ -109,7 +109,7 @@ def add_or_edit_product(product_id=None):
             db.session.rollback()
             flash(f"An error occurred: {str(e)}", "danger")
 
-    return render_template('admin/product.html', categories=categories, product=product)
+    return render_template('admin/forms/product.html', categories=categories, product=product)
 
 
 @admin_blueprint.route('/delete_product/<int:product_id>', methods=['POST'])
@@ -151,7 +151,7 @@ def manage_categories():
         return redirect(url_for('admin.admin_dashboard'))
 
     categories = Category.query.all()
-    return render_template('admin/category.html', categories=categories)
+    return render_template('admin/forms/category.html', categories=categories)
 
 
 @admin_blueprint.route('/delete_category/<int:category_id>', methods=['POST'])
@@ -202,7 +202,7 @@ def manage_users():
         ).all()
     else:
         users = Users.query.all()
-    return render_template('admin/users.html', users=users, query=query)
+    return render_template('admin/manage/users.html', users=users, query=query)
 
 
 @admin_blueprint.route('/orders', methods=['GET'])
@@ -221,7 +221,7 @@ def manage_orders():
 
     else:
         orders = Order.query.all()
-    return render_template('admin/orders.html', orders=orders, query=query)
+    return render_template('admin/manage/orders.html', orders=orders, query=query)
 
 
 @admin_blueprint.route('/products', methods=['GET'])
@@ -236,7 +236,7 @@ def manage_products():
     else:
         products = Product.query.all()
 
-    return render_template('admin/products.html', products=products, query=query)
+    return render_template('admin/manage/products.html', products=products, query=query)
 
 
 @admin_blueprint.route('/user', methods=['GET', 'POST'])
@@ -279,7 +279,7 @@ def add_or_edit_user(user_id=None):
         db.session.commit()
         return redirect(url_for('admin.manage_users'))
 
-    return render_template('admin/user.html', user=user)
+    return render_template('admin/forms/user.html', user=user)
 
 
 @admin_blueprint.route('/delete_user/<int:user_id>', methods=['POST'])
