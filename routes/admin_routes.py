@@ -211,11 +211,18 @@ def update_order_status(order_id):
 
 @admin_blueprint.route('/users', methods=['GET'])
 def manage_users():
-    users = Users.query.all()
-    return render_template('admin/users.html', users=users)
+    query = request.args.get('query')
+
+    if query:
+        users = Users.query.filter(
+            (Users.id == query) | (Users.name.ilike(f'%{query}%'))
+        ).all()
+    else:
+        users = Users.query.all()
+    return render_template('admin/users.html', users=users, query=query)
 
 
-@admin_blueprint.route('/orders', methods=['GET', 'POST'])
+@admin_blueprint.route('/orders', methods=['GET'])
 def manage_orders():
     query = request.args.get('query')
 
@@ -231,7 +238,7 @@ def manage_orders():
 
     else:
         orders = Order.query.all()
-    return render_template('admin/orders.html', orders=orders)
+    return render_template('admin/orders.html', orders=orders, query=query)
 
 
 @admin_blueprint.route('/user', methods=['GET', 'POST'])
