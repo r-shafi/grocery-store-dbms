@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash
 from models.Product import Product
 from models.Category import Category
 from models.Order import Order, OrderStatus
+from models.OrderItem import OrderItem
 from models.User import Users
 import re
 
@@ -212,6 +213,25 @@ def update_order_status(order_id):
 def manage_users():
     users = Users.query.all()
     return render_template('admin/users.html', users=users)
+
+
+@admin_blueprint.route('/orders', methods=['GET', 'POST'])
+def manage_orders():
+    query = request.args.get('query')
+
+    if query:
+        orders = Order.query.join(OrderItem).join(Product).filter(
+            (Order.id == query) |
+            (Order.user_id.in_(
+                db.session.query(Users.id).filter(
+                    Users.name.ilike(f'%{query}%')).subquery()
+            )) |
+            (Product.name.ilike(f'%{query}%'))
+        ).all()
+
+    else:
+        orders = Order.query.all()
+    return render_template('admin/orders.html', orders=orders)
 
 
 @admin_blueprint.route('/user', methods=['GET', 'POST'])
