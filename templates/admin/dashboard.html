@@ -273,6 +273,7 @@
           <tr class="border-b">
             <th class="px-6 py-3 text-left border">Order ID</th>
             <th class="px-6 py-3 text-left border">User</th>
+            <th class="px-6 py-3 text-left border">Products</th>
             <th class="px-6 py-3 text-left border">Total Price</th>
             <th class="px-6 py-3 text-left border">Status</th>
             <th class="px-6 py-3 text-left border">Date</th>
@@ -284,6 +285,10 @@
           <tr class="border-b">
               <td class="px-6 py-4 border">{{ order.id }}</td>
               <td class="px-6 py-4 border">{{ order.user.name }}</td>
+              <td class="px-6 py-4">
+                {% for item in order.order_items %} {{ item.product["name"] }} ({{
+                item.quantity }}){% if not loop.last %}, {% endif %} {% endfor %}
+              </td>
               <td class="px-6 py-4 border">
                   ৳{{ "%.2f"|format(order.total_price) }}
               </td>
