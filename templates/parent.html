@@ -81,7 +81,7 @@
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
     messages %} {% for category, message in messages %}
     <div
-      class="max-w-sm absolute z-10 top-4 right-4 p-4 flex justify-between items-center gap-4 rounded-lg border-2 flash-message {{ ' bg-green-50 text-green-500 border-green-500' if category == 'success' else ' bg-red-50 text-red-500 border-red-500' }}"
+      class="max-w-sm absolute z-30 top-4 right-4 p-4 flex justify-between items-center gap-4 rounded-lg border-2 flash-message {{ ' bg-green-50 text-green-500 border-green-500' if category == 'success' else ' bg-red-50 text-red-500 border-red-500' }}"
     >
       <p>{{ message }}</p>
       <button class="close-btn">&#x2715;</button>
