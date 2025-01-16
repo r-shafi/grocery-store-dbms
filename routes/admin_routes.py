@@ -7,6 +7,7 @@ from models.Category import Category
 from models.Order import Order, OrderStatus
 from models.OrderItem import OrderItem
 from models.User import Users
+from models.Contact import Contact
 import re
 
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
@@ -24,7 +25,7 @@ def admin_dashboard():
     total_products = Product.query.count()
     total_users = Users.query.count()
     total_orders = Order.query.count()
-
+    unread_contacts_count = Contact.query.filter_by(read=False).count() or 0
     total_revenue = db.session.query(
         db.func.sum(Order.total_price)
     ).filter(
@@ -38,7 +39,9 @@ def admin_dashboard():
 
     products = Product.query.order_by(
         Product.created_at.desc()).limit(10).all()
-    users = Users.query.order_by(Users.created_at.desc()).limit(10).all()
+
+    users = Users.query.order_by(
+        Users.created_at.desc()).limit(10).all()
 
     return render_template(
         'admin/dashboard.html',
@@ -48,7 +51,8 @@ def admin_dashboard():
         total_revenue=total_revenue,
         recent_orders=recent_orders,
         products=products,
-        users=users
+        users=users,
+        unread_contacts_count=unread_contacts_count
     )
 
 
@@ -237,6 +241,32 @@ def manage_products():
         products = Product.query.all()
 
     return render_template('admin/manage/products.html', products=products, query=query)
+
+
+@admin_blueprint.route('/contacts', methods=['GET'])
+def manage_contacts():
+    query = request.args.get('query')
+
+    if query:
+        contacts = Contact.query.filter(
+            (Contact.name.ilike(f'%{query}%')) |
+            (Contact.email.ilike(f'%{query}%')) |
+            (Contact.subject.ilike(f'%{query}%')) |
+            (Contact.message.ilike(f'%{query}%'))
+        ).all()
+    else:
+        contacts = Contact.query.all()
+
+    return render_template('admin/manage/contacts.html', contacts=contacts, query=query)
+
+
+@admin_blueprint.route('/contacts/mark_read/<int:contact_id>', methods=['POST'])
+def mark_contact_as_read(contact_id):
+    contact = Contact.query.get_or_404(contact_id)
+    contact.read = True
+    db.session.commit()
+    flash('Contact message marked as read.', 'success')
+    return redirect(url_for('admin.manage_contacts'))
 
 
 @admin_blueprint.route('/user', methods=['GET', 'POST'])
