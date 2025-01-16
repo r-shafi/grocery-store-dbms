@@ -5,18 +5,55 @@ from models.Product import Product
 
 def seed_demo_data():
     categories = [
-        "Fruits", "Vegetables", "Dairy", "Bakery", "Meat",
-        "Fish", "Snacks", "Spices", "Beverages", "Desserts"
+        {
+            "name": "Fruits",
+            "image": "https://images.pexels.com/photos/235294/pexels-photo-235294.jpeg?auto=compress&cs=tinysrgb&w=600"
+        },
+        {
+            "name": "Vegetables",
+            "image": "https://images.pexels.com/photos/1367242/pexels-photo-1367242.jpeg?auto=compress&cs=tinysrgb&w=600"
+        },
+        {
+            "name": "Dairy",
+            "image": "https://images.pexels.com/photos/248412/pexels-photo-248412.jpeg?auto=compress&cs=tinysrgb&w=600"
+        },
+        {
+            "name": "Bakery",
+            "image": "https://images.pexels.com/photos/461060/pexels-photo-461060.jpeg?auto=compress&cs=tinysrgb&w=600"
+        },
+        {
+            "name": "Meat",
+            "image": "https://images.pexels.com/photos/618775/pexels-photo-618775.jpeg?auto=compress&cs=tinysrgb&w=600"
+        },
+        {
+            "name": "Fish",
+            "image": "https://images.pexels.com/photos/725991/pexels-photo-725991.jpeg?auto=compress&cs=tinysrgb&w=600"
+        },
+        {
+            "name": "Snacks",
+            "image": "https://images.pexels.com/photos/8848610/pexels-photo-8848610.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+        },
+        {
+            "name": "Spices",
+            "image": "https://images.pexels.com/photos/2802527/pexels-photo-2802527.jpeg?auto=compress&cs=tinysrgb&w=600"
+        },
+        {
+            "name": "Beverages",
+            "image": "https://images.pexels.com/photos/3008/drinks-supermarket-cans-beverage.jpg?auto=compress&cs=tinysrgb&w=600"
+        },
+        {
+            "name": "Desserts",
+            "image": "https://images.pexels.com/photos/808941/pexels-photo-808941.jpeg?auto=compress&cs=tinysrgb&w=600"
+        }
     ]
 
-    pixel_size = 200
-    for cat in categories:
-        if not Category.query.filter_by(name=cat).first():
-            image_url = f'https://picsum.photos/{pixel_size}'
-            db.session.add(Category(name=cat, image=image_url))
-            pixel_size += 1
+    for category in categories:
+        if not Category.query.filter_by(name=category["name"]).first():
+            db.session.add(
+                Category(name=category["name"], image=category["image"]))
 
     db.session.commit()
+
     category_map = {cat.name: cat.id for cat in Category.query.all()}
 
     products = [
