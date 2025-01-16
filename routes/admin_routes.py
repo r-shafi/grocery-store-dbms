@@ -19,7 +19,7 @@ def check_admin():
         return redirect(url_for('user.login'))
 
 
-@admin_blueprint.route('/dashboard', methods=['GET', 'POST'])
+@admin_blueprint.route('/dashboard')
 def admin_dashboard():
     total_products = Product.query.count()
     total_users = Users.query.count()
@@ -39,23 +39,6 @@ def admin_dashboard():
     products = Product.query.order_by(
         Product.created_at.desc()).limit(10).all()
     users = Users.query.order_by(Users.created_at.desc()).limit(10).all()
-
-    if request.method == 'POST':
-        table = request.form.get('table')
-        query = request.form.get('query')
-
-        if table == 'Product':
-            products = Product.query.filter(
-                (Product.id == query) | (Product.name.ilike(f'%{query}%'))
-            ).all()
-        elif table == 'Users':
-            users = Users.query.filter(
-                (Users.id == query) | (Users.name.ilike(f'%{query}%'))
-            ).all()
-        else:
-            orders = Order.query.filter((Order.id == query) | (Order.user_id.in_(
-                db.session.query(Users.id).filter(Users.name.ilike(f'%{query}%')).subquery()))) .all()
-            recent_orders = orders
 
     return render_template(
         'admin/dashboard.html',
