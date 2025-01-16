@@ -197,6 +197,11 @@ def update_order_status(order_id):
             f"Cannot change the order status from '{order.status}' as it has reached a final state.", "danger")
         return redirect(url_for('admin.admin_dashboard'))
 
+    if status == 'Canceled':
+        for item in order.order_items:
+            product = Product.query.get(item.product_id)
+            product.quantity += item.quantity
+
     order.status = status
     db.session.commit()
     flash("Order status updated successfully.", "success")
