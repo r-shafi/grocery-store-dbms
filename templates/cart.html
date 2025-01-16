@@ -138,7 +138,7 @@
           </td>
 
           <td class="px-6 py-4">
-            {% for item in order.order_items %} {{ item.product_name }} ({{
+            {% for item in order.order_items %} {{ item.product["name"] }} ({{
             item.quantity }}){% if not loop.last %}, {% endif %} {% endfor %}
           </td>
 
