@@ -74,34 +74,8 @@ def view_cart():
     total_price = sum(
         item.quantity * item.product.price for item in cart_items if item.product)
 
-    order_history = []
-    for order in orders:
-        order_data = {
-            "id": order.id,
-            "status": order.status,
-            "total_price": round(order.total_price, 2),
-            "created_at": order.created_at,
-            "order_items": []
-        }
-
-        for item in order.order_items:
-            product = item.product
-            if product is not None:
-                order_item_data = {
-                    "product_id": product.id,
-                    "product_name": product.name,
-                    "product_image": product.image,
-                    "product_unit": product.unit,
-                    "quantity": item.quantity,
-                    "price_per_unit": round(product.price, 2),
-                    "total_price": round(item.price, 2)
-                }
-                order_data["order_items"].append(order_item_data)
-
-        order_history.append(order_data)
-
     try:
-        return render_template('cart.html', cart_items=cart_items, total_price=total_price, order_history=order_history)
+        return render_template('cart.html', cart_items=cart_items, total_price=total_price, order_history=orders)
     except Exception as e:
         return render_template("error.html", error=f"An error occurred: {str(e)}")
 
