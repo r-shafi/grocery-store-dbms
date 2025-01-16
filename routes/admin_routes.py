@@ -15,7 +15,7 @@ admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
 def check_admin():
     if 'user_id' not in session or not session.get('is_admin'):
         flash("You don't have permission to access the admin panel.", "danger")
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('user.login'))
 
 
 @admin_blueprint.route('/dashboard', methods=['GET', 'POST'])
