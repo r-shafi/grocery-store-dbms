@@ -241,6 +241,21 @@ def manage_orders():
     return render_template('admin/orders.html', orders=orders, query=query)
 
 
+@admin_blueprint.route('/products', methods=['GET'])
+def manage_products():
+    query = request.args.get('query')
+
+    if query:
+        products = Product.query.filter(
+            (Product.id == query) |
+            (Product.name.ilike(f'%{query}%'))
+        ).all()
+    else:
+        products = Product.query.all()
+
+    return render_template('admin/products.html', products=products, query=query)
+
+
 @admin_blueprint.route('/user', methods=['GET', 'POST'])
 @admin_blueprint.route('/user/<int:user_id>', methods=['GET', 'POST'])
 def add_or_edit_user(user_id=None):
