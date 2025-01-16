@@ -315,7 +315,17 @@ def add_or_edit_user(user_id=None):
 @admin_blueprint.route('/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
     user = Users.query.get_or_404(user_id)
+
+    orders = Order.query.filter_by(user_id=user_id).all()
+    for order in orders:
+        items = OrderItem.query.filter_by(order_id=order.id).all()
+        for item in items:
+            db.session.delete(item)
+
+        db.session.delete(order)
+
     db.session.delete(user)
     db.session.commit()
-    flash("User deleted successfully.", "success")
+    flash("User and their associated orders deleted successfully.", "success")
+
     return redirect(url_for('admin.manage_users'))
