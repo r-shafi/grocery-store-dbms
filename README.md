@@ -4,7 +4,7 @@
 
 ## Overview
 
-This is a comprehensive Grocery Store Application built using Python, Flask, SQL, HTML, and Bootstrap. The application is designed to manage various aspects of a grocery store, including product management, user management, order management, and more.
+This is a comprehensive Grocery Store Application built using Python, Flask, SQL, HTML, and Tailwind. The application is designed to manage various aspects of a grocery store, including product management, user management, order management, and more.
 
 ## Features
 
@@ -26,7 +26,6 @@ This is a comprehensive Grocery Store Application built using Python, Flask, SQL
 
 - Ordering System: Users can browse products, add items to their cart, and place orders.
 - Cart Management: Users can view their cart, remove items, and apply discounts.
-- Contact Information: Users can view and edit their contact information.
 
 ### Public Routes
 
@@ -40,7 +39,7 @@ This is a comprehensive Grocery Store Application built using Python, Flask, SQL
 - Flask: A lightweight web framework used to build the application's backend.
 - SQL: The database management system used to store and manage data.
 - HTML: The markup language used for structuring content on the web.
-- Bootstrap: A popular front-end framework used for responsive web design.
+- Tailwind: A popular front-end framework used for responsive web design.
 
 ## Developed By
 
